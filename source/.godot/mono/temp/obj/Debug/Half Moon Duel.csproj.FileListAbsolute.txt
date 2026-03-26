@@ -1,0 +1,18 @@
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.csproj.AssemblyReference.cache
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.GeneratedMSBuildEditorConfig.editorconfig
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.AssemblyInfoInputs.cache
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.AssemblyInfo.cs
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.csproj.CoreCompileInputs.cache
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.sourcelink.json
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\Half Moon Duel.deps.json
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\Half Moon Duel.runtimeconfig.json
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\Half Moon Duel.dll
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\Half Moon Duel.pdb
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\GodotSharp.dll
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moo.AD336945.Up2Date
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.dll
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\refint\Half Moon Duel.dll
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.pdb
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\Half Moon Duel.genruntimeconfig.cache
+E:\Programming-Environment\Half-Moon-Duel\source\.godot\mono\temp\obj\Debug\ref\Half Moon Duel.dll

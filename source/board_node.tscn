@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://bkyhqjrh867wl"]
+
+[ext_resource type="Texture2D" uid="uid://b0urt3qe7mhsq" path="res://aset/node_normal.png" id="1_ju4ou"]
+[ext_resource type="Script" uid="uid://b8tif3el8jxtc" path="res://BoardNode.cs" id="1_rbrlf"]
+[ext_resource type="Texture2D" uid="uid://44i70cdbwceo" path="res://aset/node_pressed.png" id="2_rbrlf"]
+
+[node name="BoardNode" type="TextureButton" unique_id=623789310]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -360.0
+offset_right = -586.0
+offset_bottom = -306.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("1_ju4ou")
+texture_pressed = ExtResource("1_ju4ou")
+texture_hover = ExtResource("2_rbrlf")
+script = ExtResource("1_rbrlf")

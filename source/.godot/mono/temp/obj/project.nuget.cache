@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "KpfuQGgr+nE=",
+  "success": true,
+  "projectFilePath": "E:\\Programming-Environment\\Half-Moon-Duel\\source\\Half Moon Duel.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Milieth\\.nuget\\packages\\godot.sourcegenerators\\4.6.1\\godot.sourcegenerators.4.6.1.nupkg.sha512",
+    "C:\\Users\\Milieth\\.nuget\\packages\\godotsharp\\4.6.1\\godotsharp.4.6.1.nupkg.sha512",
+    "C:\\Users\\Milieth\\.nuget\\packages\\godotsharpeditor\\4.6.1\\godotsharpeditor.4.6.1.nupkg.sha512"
+  ],
+  "logs": []
+}

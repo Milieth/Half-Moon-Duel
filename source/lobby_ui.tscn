@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://do4dxlkqs6df6"]
+
+[ext_resource type="Script" uid="uid://b3jy1m3s8xtnv" path="res://LobbyUi.cs" id="1_riqbw"]
+
+[sub_resource type="Theme" id="Theme_vuyhs"]
+default_font_size = 50
+
+[sub_resource type="Theme" id="Theme_riqbw"]
+default_font_size = 25
+
+[node name="LobbyUI" type="Control" unique_id=1144877588]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 128.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_riqbw")
+
+[node name="LobbyPanel" type="Panel" parent="." unique_id=1139320638]
+layout_mode = 0
+offset_left = 393.0
+offset_top = 331.0
+offset_right = 889.0
+offset_bottom = 608.0
+
+[node name="ConnectMenu" type="HBoxContainer" parent="LobbyPanel" unique_id=1020460437]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 175.0
+offset_right = 467.0
+offset_bottom = 252.0
+pivot_offset = Vector2(0.5, 0.5)
+theme = SubResource("Theme_vuyhs")
+theme_override_constants/separation = 40
+
+[node name="HostButton" type="Button" parent="LobbyPanel/ConnectMenu" unique_id=1128184301]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="LobbyPanel/ConnectMenu" unique_id=884379661]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+text = "Join"
+
+[node name="AddressEdit" type="LineEdit" parent="LobbyPanel" unique_id=617027019]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 33.0
+offset_top = 87.0
+offset_right = 467.0
+offset_bottom = 151.0
+theme_override_font_sizes/font_size = 35
+text = "127.0.0.1"
+
+[node name="AddressLabel" type="Label" parent="LobbyPanel" unique_id=1187661488]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 15.0
+offset_right = 254.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 40
+text = "IP Address :"
+
+[node name="StatusPanel" type="Panel" parent="." unique_id=1470520482]
+layout_mode = 0
+offset_left = 395.0
+offset_top = 635.0
+offset_right = 891.0
+offset_bottom = 675.0
+theme = SubResource("Theme_riqbw")
+
+[node name="StatusOk" type="Label" parent="StatusPanel" unique_id=584518132]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_right = 93.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+
+[node name="StatusFail" type="Label" parent="StatusPanel" unique_id=784848741]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 10.0
+offset_right = 50.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+
+[connection signal="pressed" from="LobbyPanel/ConnectMenu/HostButton" to="." method="OnHostButtonPressed"]
+[connection signal="pressed" from="LobbyPanel/ConnectMenu/JoinButton" to="." method="OnJoinButtonPressed"]

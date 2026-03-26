@@ -1,0 +1,165 @@
+using Godot;
+using System;
+
+public partial class LobbyUi : Control
+{
+	private const int DefaultPort = 8910;
+	private const int MaxClient = 1;
+	private	ENetMultiplayerPeer _peer;
+	private LineEdit _ipAddress;
+	private Label _statusOk;
+	private Label _statusFail;
+	private Button _hostButton;
+	private Button _joinButton;
+
+	public override void _Ready()
+	{
+		_ipAddress = GetNode<LineEdit>("%AddressEdit");
+		_statusOk = GetNode<Label>("%StatusOk");
+		_statusFail = GetNode<Label>("%StatusFail");
+		_hostButton = GetNode<Button>("%HostButton");
+		_joinButton = GetNode<Button>("%JoinButton");
+
+		var multi = GetTree().GetMultiplayer();
+
+		multi.PeerConnected += PlayerConnected;
+		multi.PeerDisconnected += PlayerDisconnected;
+		multi.ConnectedToServer += ConnectedOk;
+		multi.ConnectionFailed += ConnectedFail;
+		multi.ServerDisconnected += ServerDisconnected;
+	}
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+
+		var multi = GetTree().GetMultiplayer();
+		if(multi is not null)
+		{
+			multi.PeerConnected -= PlayerConnected;
+			multi.PeerDisconnected -= PlayerDisconnected;
+			multi.ConnectedToServer -= ConnectedOk;
+			multi.ConnectionFailed -= ConnectedFail;
+			multi.ServerDisconnected -= ServerDisconnected;			
+		}
+    }
+
+	//Display text to screen below lobby panel
+	private void SetStatus(string text, bool isOk)
+	{
+		if(isOk)
+		{
+			_statusOk.Text = text;
+			_statusFail.Text = "";
+		}
+		else
+		{
+			_statusOk.Text = "";
+			_statusFail.Text = text;			
+		}
+	}
+    // Callback from SceneTree
+	private void PlayerConnected(long id)
+	{		
+        var rpsScene = ResourceLoader.Load<PackedScene>("res://rps_ui.tscn").Instantiate();
+		rpsScene.Connect("GameFinished", new Callable(this, nameof(EndGame)), (int)ConnectFlags.Deferred);
+		GetTree().Root.AddChild(rpsScene);
+		Hide();
+	}
+
+    // Callback from SceneTree
+	private void PlayerDisconnected(long id)
+	{
+		EndGame(GetTree().GetMultiplayer().IsServer()?"Server Disconnected":"Client Disconnected");
+	}
+
+    // Callback from SceneTree, only for clients (not server).
+	private void ConnectedOk()
+	{
+		// GD.Print("Multiplayer CB: ConnectedOk");
+	}
+
+    // Callback from SceneTree, only for clients (not server).
+	private void ConnectedFail()
+	{
+		SetStatus("Couldn't Connect.!", false);
+		CleanUpPeer();
+		_hostButton.Disabled = false;
+		_joinButton.Disabled = false;
+	}
+
+    // Callback from SceneTree
+	private void ServerDisconnected()
+	{
+		EndGame("Server Disconnected");
+	}
+
+	//create a server
+	private void OnHostButtonPressed()
+	{
+		_peer = new ENetMultiplayerPeer();
+		var err = _peer.CreateServer(DefaultPort, MaxClient);
+		if(err != Error.Ok)
+		{
+			SetStatus($"Failed to setup networking! Error: {err}", false);
+			return;
+		}
+		_peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
+
+		GetTree().GetMultiplayer().MultiplayerPeer = _peer;
+		SetStatus("Waiting for other player.. .", true);
+
+		_hostButton.Disabled = true;
+		_joinButton.Disabled = true;
+	}
+
+	//join a server with IP
+	private void OnJoinButtonPressed()
+	{
+		var ip = _ipAddress.Text;
+		if(!ip.IsValidIPAddress())
+		{
+			SetStatus("IP Address is invalid.!", false);
+			return;
+		}
+
+		_peer = new ENetMultiplayerPeer();
+		_peer.CreateClient(ip, DefaultPort);
+		_peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
+
+		GetTree().GetMultiplayer().MultiplayerPeer = _peer;
+		SetStatus("Connecting.. .", true);
+
+		_hostButton.Disabled = true;
+		_joinButton.Disabled = true;
+	}
+
+	private void EndGame(string withError="")
+	{
+		if(HasNode("/root/RPS_UI"))
+		{
+			GetNode("/root/RPS_UI").Free();	
+			// GD.Print("/root/RPS_UI has been released");
+			Show();
+		}
+		CleanUpPeer();
+
+		_hostButton.Disabled = false;
+		_joinButton.Disabled = false;
+
+		SetStatus(withError, false);
+	}
+
+	//release peer singleton global and local
+	private void CleanUpPeer()
+	{
+		if (_peer != null)
+		{
+			_peer.Close();
+			_peer = null;
+		}
+
+		GetTree().GetMultiplayer().MultiplayerPeer = null;		
+	}
+}
+

@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://crayu8p3h10ug"]
+
+[ext_resource type="Script" uid="uid://du6yx50f8wrok" path="res://Board.cs" id="1_3ng4l"]
+[ext_resource type="PackedScene" uid="uid://bkyhqjrh867wl" path="res://board_node.tscn" id="1_nd4as"]
+
+[node name="Board" type="Control" unique_id=1642530234]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_3ng4l")
+
+[node name="EdgeLine" type="Line2D" parent="." unique_id=1535581802]
+width = 5.0
+default_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
+antialiased = true
+
+[node name="A" parent="." unique_id=623789310 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -170.0
+offset_top = -176.0
+offset_right = -116.0
+offset_bottom = -122.0
+_adjacent = PackedStringArray("B", "D")
+
+[node name="B" parent="." unique_id=306520531 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -20.0
+offset_top = -176.0
+offset_right = 34.0
+offset_bottom = -122.0
+_adjacent = PackedStringArray("A", "C", "E")
+
+[node name="C" parent="." unique_id=556901887 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = 130.0
+offset_top = -176.0
+offset_right = 184.0
+offset_bottom = -122.0
+_adjacent = PackedStringArray("B", "F")
+
+[node name="D" parent="." unique_id=1897769128 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -170.0
+offset_top = -26.0
+offset_right = -116.0
+offset_bottom = 28.0
+_adjacent = PackedStringArray("A", "E", "G")
+
+[node name="E" parent="." unique_id=1040998290 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -20.0
+offset_top = -26.0
+offset_right = 34.0
+offset_bottom = 28.0
+_adjacent = PackedStringArray("B", "D", "F", "H")
+
+[node name="F" parent="." unique_id=1537872688 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = 130.0
+offset_top = -26.0
+offset_right = 184.0
+offset_bottom = 28.0
+_adjacent = PackedStringArray("C", "E", "I")
+
+[node name="G" parent="." unique_id=644679309 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -170.0
+offset_top = 124.0
+offset_right = -116.0
+offset_bottom = 178.0
+_adjacent = PackedStringArray("D", "H")
+
+[node name="H" parent="." unique_id=666385882 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = -20.0
+offset_top = 124.0
+offset_right = 34.0
+offset_bottom = 178.0
+_adjacent = PackedStringArray("E", "G", "I")
+
+[node name="I" parent="." unique_id=343477496 instance=ExtResource("1_nd4as")]
+layout_mode = 1
+offset_left = 130.0
+offset_top = 124.0
+offset_right = 184.0
+offset_bottom = 178.0
+_adjacent = PackedStringArray("F", "H")

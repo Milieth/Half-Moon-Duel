@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dk1qvb24n7g5c"]
+
+[ext_resource type="Script" uid="uid://dcrxe1vmgt3a6" path="res://MoonCard.cs" id="2_hgaxs"]
+
+[node name="MoonCard" type="Sprite2D" unique_id=1966503947]
+script = ExtResource("2_hgaxs")

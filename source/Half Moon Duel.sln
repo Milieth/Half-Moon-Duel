@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Half Moon Duel", "Half Moon Duel.csproj", "{65E312EE-D125-4130-8379-B4ADDD35FA32}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{65E312EE-D125-4130-8379-B4ADDD35FA32}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal

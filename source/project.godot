@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Half Moon Duel"
-run/main_scene="uid://crayu8p3h10ug"
+run/main_scene="uid://b8tw6mwbldeqv"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 

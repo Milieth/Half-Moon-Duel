@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://1j70kqdmil32"]
+
+[ext_resource type="Script" uid="uid://bpp7yuoncaydj" path="res://Hand.cs" id="1_wymn8"]
+
+[node name="Hand" type="HBoxContainer" unique_id=938261323]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 2
+script = ExtResource("1_wymn8")
+
+[node name="SelectedBorder" type="ReferenceRect" parent="." unique_id=136287272]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+border_color = Color(1, 1, 0, 1)
+border_width = 2.0
+editor_only = false

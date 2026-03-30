@@ -3,16 +3,24 @@ using System;
 
 public partial class BoardNode : TextureButton
 {
+	[Signal]
+	public delegate void OnBoardNodePressedEventHandler(string nodeID);
 	public string _id{get;private set;} = "A";
 	[Export]
 	public string[] _adjacent{get;set;}
 	[Export]
-	private MoonCard _card;
+	public MoonCard _card{get;set;}
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		_id = this.Name;
+		this.Pressed += OnPressed;
+	}
+
+	public void OnPressed()
+	{
+		EmitSignal("OnBoardNodePressed", _id);
 	}
 
 	//return the center position relative to screen
@@ -22,17 +30,30 @@ public partial class BoardNode : TextureButton
 		return this.GlobalPosition + centerOffset;
 	}
 
+	//attach moon card to this node
 	public void AddCard(MoonCard card)
 	{
 		if(card is null)
 			return;
 
 		RemoveCard();
+
 		card.Position = new Vector2(this.Size.X/2, this.Size.Y/2);
-		AddChild(card);
+		if(card.GetParent() is null)
+		{
+			AddChild(card);		
+		}
+		else
+		{
+			card.Reparent(this, keepGlobalTransform:false);
+		}
+
 		_card = card;
+
+		this.Disabled = true;
 	}
 
+	//remove attached mooon card from this node
 	public void RemoveCard()
 	{
 		if(_card is not null)
@@ -40,10 +61,7 @@ public partial class BoardNode : TextureButton
 			RemoveChild(_card);
 			_card = null;					
 		}
-	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+		this.Disabled = false;
 	}
 }

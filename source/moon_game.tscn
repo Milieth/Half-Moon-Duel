@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b8tw6mwbldeqv"]
+
+[ext_resource type="PackedScene" uid="uid://crayu8p3h10ug" path="res://Board.tscn" id="1_a445s"]
+[ext_resource type="Script" uid="uid://dicjkq6cffa7g" path="res://MoonGame.cs" id="1_ehahf"]
+[ext_resource type="PackedScene" uid="uid://1j70kqdmil32" path="res://hand.tscn" id="2_ehahf"]
+
+[node name="MoonGame" type="Control" unique_id=718595583]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ehahf")
+
+[node name="Board" parent="." unique_id=1642530234 instance=ExtResource("1_a445s")]
+layout_mode = 1
+
+[node name="Hand" parent="." unique_id=938261323 instance=ExtResource("2_ehahf")]
+layout_mode = 1
+offset_top = 270.0
+offset_bottom = 270.0

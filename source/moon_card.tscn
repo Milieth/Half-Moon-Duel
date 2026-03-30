@@ -1,6 +1,15 @@
 [gd_scene format=3 uid="uid://dk1qvb24n7g5c"]
 
+[ext_resource type="Texture2D" uid="uid://cak424xoqv6ir" path="res://aset/card_back.png" id="2_2opql"]
 [ext_resource type="Script" uid="uid://dcrxe1vmgt3a6" path="res://MoonCard.cs" id="2_hgaxs"]
+[ext_resource type="Texture2D" uid="uid://culrx02ksmchf" path="res://aset/MoonCard_1.webp" id="3_7fda4"]
 
 [node name="MoonCard" type="Sprite2D" unique_id=1966503947]
 script = ExtResource("2_hgaxs")
+
+[node name="BackIcon" type="Sprite2D" parent="." unique_id=1351680565]
+visible = false
+texture = ExtResource("2_2opql")
+
+[node name="FrontIcon" type="Sprite2D" parent="." unique_id=1924963998]
+texture = ExtResource("3_7fda4")

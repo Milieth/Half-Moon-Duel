@@ -1,8 +1,6 @@
-res://MoonCard.cs
-res://moon_card.tscn
-res://BoardNode.cs
-res://board_node.tscn
-res://RpsUi.cs
-res://LobbyUi.cs
-res://Board.tscn
+res://moon_game.tscn
+res://MoonGame.cs
+res://Hand.cs
 res://Board.cs
+res://MoonCard.cs
+res://BoardNode.cs

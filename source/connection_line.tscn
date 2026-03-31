@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://f0c8ncwtbsi8"]
+
+[ext_resource type="Script" uid="uid://boxxxsjb624c8" path="res://ConnectionLine.cs" id="1_3kb2d"]
+[ext_resource type="Texture2D" uid="uid://bmuwvop6pugq0" path="res://aset/white pair.png" id="1_d2ce3"]
+
+[node name="ConnectionLine" type="Node2D" unique_id=1714434607]
+script = ExtResource("1_3kb2d")
+
+[node name="Edge" type="Line2D" parent="." unique_id=963621690]
+width = 5.0
+default_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+antialiased = true
+
+[node name="PairIcon" type="Sprite2D" parent="." unique_id=863871043]
+visible = false
+texture = ExtResource("1_d2ce3")

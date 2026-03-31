@@ -1,25 +1,30 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1774838988
-Board.cs::CSharpScript::8628534529894787402::1774673931::0::1::::<>Control<><>0<>0<><>::
+::res://::1774953384
+Board.cs::CSharpScript::8628534529894787402::1774931902::0::1::::<>Control<><>0<>0<><>::
 Board.tscn::PackedScene::5967546390662464402::1774575032::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 BoardNode.cs::CSharpScript::4742371843364253084::1774659672::0::1::::<>TextureButton<><>0<>0<><>::
 board_node.tscn::PackedScene::3138308277157932703::1774509768::0::1::::<><><>0<>0<><>::uid://b0urt3qe7mhsq::::res://aset/node_normal.png<>uid://b8tif3el8jxtc::::res://BoardNode.cs<>uid://44i70cdbwceo::::res://aset/node_pressed.png
+ConnectionLine.cs::CSharpScript::3417983706473869569::1774927777::0::1::::<>Node2D<><>0<>0<><>::
+connection_line.tscn::PackedScene::402734714144241649::1774929416::0::1::::<><><>0<>0<><>::uid://boxxxsjb624c8::::res://ConnectionLine.cs<>uid://bmuwvop6pugq0::::res://aset/white pair.png
 export_presets.cfg::TextFile::-1::1773883938::0::1::::<><><>0<>0<><>::
 Hand.cs::CSharpScript::3472205880084353551::1774671066::0::1::::<>HBoxContainer<><>0<>0<><>::
 hand.tscn::PackedScene::1845477473094571743::1774581077::0::1::::<><><>0<>0<><>::uid://bpp7yuoncaydj::::res://Hand.cs
 icon.svg::CompressedTexture2D::6716958502443264032::1773661777::1773661814::1::::<><><>0<>0<>814355a000037b52da73c2731abc5f84<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 LobbyUi.cs::CSharpScript::4371792018210056739::1773855706::0::1::::<>Control<><>0<>0<><>::
 lobby_ui.tscn::PackedScene::8201996635074740717::1773855895::0::1::::<><><>0<>0<><>::uid://b3jy1m3s8xtnv::::res://LobbyUi.cs
-MoonCard.cs::CSharpScript::7336139192785651143::1774607142::0::1::::<>Sprite2D<><>0<>0<><>::
-MoonGame.cs::CSharpScript::7725466754925918270::1774674041::0::1::::<>Control<><>0<>0<><>::
-moon_card.tscn::PackedScene::7915833378190782150::1774599193::0::1::::<><><>0<>0<><>::uid://cak424xoqv6ir::::res://aset/card_back.png<>uid://dcrxe1vmgt3a6::::res://MoonCard.cs<>uid://culrx02ksmchf::::res://aset/MoonCard_1.webp
-moon_game.tscn::PackedScene::4743267498853376557::1774609732::0::1::::<><><>0<>0<><>::uid://crayu8p3h10ug::::res://Board.tscn<>uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn
+MoonCard.cs::CSharpScript::7336139192785651143::1774925737::0::1::::<>Sprite2D<><>0<>0<><>::
+MoonGame.cs::CSharpScript::7725466754925918270::1774917176::0::1::::<>Control<><>0<>0<><>::
+moon_card.tscn::PackedScene::7915833378190782150::1774916450::0::1::::<><><>0<>0<><>::uid://cak424xoqv6ir::::res://aset/card_back.png<>uid://dcrxe1vmgt3a6::::res://MoonCard.cs<>uid://culrx02ksmchf::::res://aset/MoonCard_1.webp
+moon_game.tscn::PackedScene::4743267498853376557::1774878042::0::1::::<><><>0<>0<><>::uid://crayu8p3h10ug::::res://Board.tscn<>uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn<>uid://cxabyacn2uqgw::::res://player_score.tscn
 paper.jpg::CompressedTexture2D::2739050624575070407::1763299232::1773770866::1::::<><><>0<>0<>5609a42e8ba37152ad92f4a62b922d5d<>res://.godot/imported/paper.jpg-9469f63d708c97ca8bac06146d0195bd.ctex::
+PlayerScore.cs::CSharpScript::1187979573400436270::1774879999::0::1::::<>HBoxContainer<><>0<>0<><>::
+player_score.tscn::PackedScene::6387288350824586130::1774877792::0::1::::<><><>0<>0<><>::uid://q6p35uygelhu::::res://PlayerScore.cs<>uid://bbmo15m78qjeo::::res://aset/white star.png
 rock.jpg::CompressedTexture2D::1678102176156451364::1763299182::1773770866::1::::<><><>0<>0<>920a7c44ef9ce7a9334bf892a87af5cc<>res://.godot/imported/rock.jpg-7f52c5d3f09d52aadf10e38f147e8528.ctex::
 RpsUi.cs::CSharpScript::3368587006863967525::1773883807::0::1::::<>Control<><>0<>0<><>::
 rps_ui.tscn::PackedScene::1873813505307548433::1773883500::0::1::::<><><>0<>0<><>::uid://x55dk5yukaxg::::res://rock.jpg<>uid://bn81evbklsfrp::::res://RpsUi.cs<>uid://bfa207y11xi12::::res://paper.jpg<>uid://x5se7q83owjh::::res://scissor.jpg
 scissor.jpg::CompressedTexture2D::1677376492343391713::1763299216::1773770866::1::::<><><>0<>0<>19a505bd8ea5cab9a4ff272ab0c23f68<>res://.godot/imported/scissor.jpg-e9ef01eda685566c59a7b55c94a034c4.ctex::
-::res://aset/::1774598560
+::res://aset/::1774924270
+black star.png::CompressedTexture2D::644810905535536555::1774876572::1774876637::1::::<><><>0<>0<>a6eb5d268b0c4afb8f3128addd3788fe<>res://.godot/imported/black star.png-99412af130cf3421193075a40d38d342.ctex::
 card_back.png::CompressedTexture2D::4795295713518454085::1774597366::1774598560::1::::<><><>0<>0<>826e5fb4b87a3c99f6fea1b4ce961c8e<>res://.godot/imported/card_back.png-4340807e6d7068e37c916d7a36d9bf27.ctex::
 MoonCard_0.webp::CompressedTexture2D::4674093633999145893::1774181802::1774510773::1::::<><><>0<>0<>eee60ca93a7eacb5cfe3a0fbcfad1a6a<>res://.godot/imported/MoonCard_0.webp-ea45349e2d60c6b014d6f8af36223bda.ctex::
 MoonCard_1.webp::CompressedTexture2D::6200401012850705147::1774181803::1774510773::1::::<><><>0<>0<>96dcef6ecc6c1029bed8788ea5137c19<>res://.godot/imported/MoonCard_1.webp-b982980a60f3a2e80cd898e6424f3fb0.ctex::
@@ -31,6 +36,9 @@ MoonCard_6.webp::CompressedTexture2D::5691891701024315322::1774181807::177451077
 MoonCard_7.webp::CompressedTexture2D::6333075059339112849::1774181807::1774510773::1::::<><><>0<>0<>861fa0c668b882ed10387c683e726d93<>res://.godot/imported/MoonCard_7.webp-3f54b288580de5488519a99521d30437.ctex::
 node_normal.png::CompressedTexture2D::4183496944281988592::1774479667::1774479785::1::::<><><>0<>0<>a0c96045366f5ae2a87eded601f2b399<>res://.godot/imported/node_normal.png-464b7d4ed6d82b0abf751098a8c66970.ctex::
 node_pressed.png::CompressedTexture2D::2095887618029633214::1774479645::1774479785::1::::<><><>0<>0<>49ad7de6428998a5f6e0e1567dac400b<>res://.godot/imported/node_pressed.png-a933ea1ce01aacf41b10694a4cf911e4.ctex::
+white dot.png::CompressedTexture2D::4384034384166956974::1774924232::1774924270::1::::<><><>0<>0<>9734e53c5121de83ee0c795d16a13c8e<>res://.godot/imported/white dot.png-acd45002a68111f79e6f8f611384d1f3.ctex::
+white pair.png::CompressedTexture2D::3271348397871855233::1774924220::1774924270::1::::<><><>0<>0<>695cf324a315a41dd16417b7d3e808d5<>res://.godot/imported/white pair.png-4cc19b4a97abe5422446d733f18ee287.ctex::
+white star.png::CompressedTexture2D::2482280124656937930::1774876550::1774876637::1::::<><><>0<>0<>176112bdb9b9c5fe5a06dde37be178f5<>res://.godot/imported/white star.png-0e30b9594a3aef93d63a2fdd9f09470f.ctex::
 ::res://Release/::1773883915
 ::res://Release/data_Half Moon Duel_windows_x86_64/::1773883938
 Half Moon Duel.deps.json::JSON::-1::1773883917::0::1::::<><><>0<>0<><>::

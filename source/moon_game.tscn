@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://crayu8p3h10ug" path="res://Board.tscn" id="1_a445s"]
 [ext_resource type="Script" uid="uid://dicjkq6cffa7g" path="res://MoonGame.cs" id="1_ehahf"]
 [ext_resource type="PackedScene" uid="uid://1j70kqdmil32" path="res://hand.tscn" id="2_ehahf"]
+[ext_resource type="PackedScene" uid="uid://cxabyacn2uqgw" path="res://player_score.tscn" id="4_vnm5s"]
 
 [node name="MoonGame" type="Control" unique_id=718595583]
 layout_mode = 3
@@ -20,3 +21,20 @@ layout_mode = 1
 layout_mode = 1
 offset_top = 270.0
 offset_bottom = 270.0
+
+[node name="WhiteScore" parent="." unique_id=951343626 instance=ExtResource("4_vnm5s")]
+layout_mode = 1
+offset_left = -578.0
+offset_top = 129.0
+offset_right = -511.0
+offset_bottom = 169.0
+scale = Vector2(1.5, 1.5)
+
+[node name="BlackScore" parent="." unique_id=688299629 instance=ExtResource("4_vnm5s")]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+offset_left = 448.0
+offset_top = -167.0
+offset_right = 515.0
+offset_bottom = -127.0
+scale = Vector2(1.5, 1.5)

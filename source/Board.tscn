@@ -14,11 +14,6 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_3ng4l")
 
-[node name="EdgeLine" type="Line2D" parent="." unique_id=1535581802]
-width = 5.0
-default_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
-antialiased = true
-
 [node name="A" parent="." unique_id=623789310 instance=ExtResource("1_nd4as")]
 layout_mode = 1
 offset_left = -170.0

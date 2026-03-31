@@ -7,7 +7,7 @@ public partial class Board : Control
 {
 	private int _id = 0;
 	public Dictionary<string, BoardNode> _nodes{get;set;} = new();
-	private Line2D _edgeLine;
+	public Dictionary<string, ConnectionLine> _edgeConnection{get;set;} = new();
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -17,16 +17,31 @@ public partial class Board : Control
 			if(child is BoardNode node)
 			{
 				_nodes.Add(node._id, node);	
-				// node.OnBoardNodePressed += 				
 			}
 		}
 		
-		_edgeLine = GetNode<Line2D>("EdgeLine");
-		DrawEdges();
+		ConnectEdgeOfEveryNodes();
+	}
+
+	//setting cards color bright or dark
+	public void SetCardsColor(List<string> nodes, MoonCard.Color color)
+	{
+		foreach(var id in nodes)
+			_nodes[id]._card.SetColor(color);
+	}
+
+	//set connection line type based on occured event
+	public void SetConnectionLineByEvent(CardMatchEvent matchEvent)
+	{
+		foreach(var lineName in ConnectionLine.GetLineNameFromNodes(matchEvent._nodes))
+		{
+			var sortedName = new string(lineName.OrderBy(c => c).ToArray());
+			_edgeConnection[sortedName].SetMatchPattern(matchEvent._pattern);			
+		}
 	}
 
     // find possible lunar sequence chain from target node
-	public List<List<string>> GetLunarSequenceList(string targetNodeID)
+	public List<List<string>> GetPhaseSequenceList(string targetNodeID)
 	{
 		var backwardBranch = FindLunarBranch(targetNodeID, true);
 		var forwardBranch = FindLunarBranch(targetNodeID, false);
@@ -166,8 +181,8 @@ public partial class Board : Control
 		return moonPair;		
 	}
 
-	//draw edge line each adjacent nodes
-	private void DrawEdges()
+	//Add ConnectionLine for each connection of nodes
+	private void ConnectEdgeOfEveryNodes()
 	{
 		HashSet<string> finishedNode = new();
 		foreach(var (id, node) in _nodes)
@@ -176,28 +191,30 @@ public partial class Board : Control
 			foreach(string neighborID in node._adjacent)
 			{
 				if(!finishedNode.Contains(neighborID))
-				{
-					DrawLine(id, neighborID);
-				}
+					ConnectEdge(id, neighborID);
 			}
 		}
 	}
 
-	//helper to draw edge line from 2 board nodeID
-	private void DrawLine(string nodeID1, string nodeID2)
+	//helper to Add ConnectionLine between 2 nodes by specify their ID
+	private void ConnectEdge(string nodeID1, string nodeID2)
 	{
-		DrawLine(_nodes[nodeID1], _nodes[nodeID2]);
+		ConnectEdge(_nodes[nodeID1], _nodes[nodeID2]);
 	}
 
-	//helper to draw edge line from 2 board node
-	private void DrawLine(BoardNode node1, BoardNode node2)
+	//helper to Add ConnectionLine between 2 nodes
+	private void ConnectEdge(BoardNode node1, BoardNode node2)
 	{
-		var newLine = (Line2D)_edgeLine.Duplicate();
+		string lineName = node1._id + node2._id;
+		string sorted = new string(lineName.OrderBy(c => c).ToArray());
 
-		newLine.AddPoint(node1.GetCenterPosition());
-		newLine.AddPoint(node2.GetCenterPosition());
+		var packed = GD.Load<PackedScene>("res://connection_line.tscn");
+		var edge = packed.Instantiate<ConnectionLine>();
+		AddChild(edge);
+		_edgeConnection[sorted] = edge;
 
-		_edgeLine.AddChild(newLine);
+		edge.ZIndex = -1;
+		edge.ConnectEdge(node1.GetCenterPosition(), node2.GetCenterPosition());
+		edge.SetMatchPattern(MoonCard.Pattern.None);
 	}
-
 }

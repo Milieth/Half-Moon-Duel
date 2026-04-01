@@ -61,7 +61,7 @@ public partial class LobbyUi : Control
     // Callback from SceneTree
 	private void PlayerConnected(long id)
 	{		
-        var rpsScene = ResourceLoader.Load<PackedScene>("res://rps_ui.tscn").Instantiate();
+        var rpsScene = ResourceLoader.Load<PackedScene>("res://moon_game.tscn").Instantiate();
 		rpsScene.Connect("GameFinished", new Callable(this, nameof(EndGame)), (int)ConnectFlags.Deferred);
 		GetTree().Root.AddChild(rpsScene);
 		Hide();
@@ -136,9 +136,9 @@ public partial class LobbyUi : Control
 
 	private void EndGame(string withError="")
 	{
-		if(HasNode("/root/RPS_UI"))
+		if(HasNode("/root/MoonGame"))
 		{
-			GetNode("/root/RPS_UI").Free();	
+			GetNode("/root/MoonGame").Free();	
 			// GD.Print("/root/RPS_UI has been released");
 			Show();
 		}

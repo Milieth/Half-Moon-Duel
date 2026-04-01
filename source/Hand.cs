@@ -1,9 +1,10 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class Hand : HBoxContainer
 {
-	private ButtonGroup _cardButtonGroup = new();
+	public ButtonGroup _cardButtonGroup{get;set;} = new();
 	private ReferenceRect _selectedBorder;
 	private RandomNumberGenerator _rng= new();
 
@@ -14,13 +15,6 @@ public partial class Hand : HBoxContainer
 		_selectedBorder = GetNode<ReferenceRect>("SelectedBorder");
 
 		_rng.Randomize();
-
-		// DrawCardRandomly();
-		// DrawCardRandomly();
-		// DrawCardRandomly();
-		DrawCard(0);
-		DrawCard(1);
-		DrawCard(2);		
 	}
 
 	//close cards face down prevent other player to see it
@@ -49,29 +43,48 @@ public partial class Hand : HBoxContainer
 		}
 	}
 
-	//return currently selected moon card in hand, return null if no selected card
-	public MoonCard GetSelectedCard()
+	//validate wheter card actually exist in hand
+	public bool ValidCard(int index)
 	{
-		var button = _cardButtonGroup.GetPressedButton();
+		var button = _cardButtonGroup.GetButtons().ElementAtOrDefault(index);
+		return button != null;
+	}
+
+	//return selected button/card index in array
+	public int GetSelectedButtonIndex()
+	{
+		var pressedButton = _cardButtonGroup.GetPressedButton();
+		if(pressedButton is not null)
+			return _cardButtonGroup.GetButtons().IndexOf(pressedButton);
+		else
+			return -1;
+	}
+
+	//return card in hand by its index
+	public MoonCard GetCard(int index)
+	{
+		var button = _cardButtonGroup.GetButtons().ElementAtOrDefault(index);
 		if(button is null)
 			return null;
 		
 		return button.GetNode<MoonCard>("MoonCard");
 	}
 
-	//remove selected button in hand ButtonGroup immadiately
-	public void RemoveSelectedButton()
+	// remove button in hand by index, can be used together with GetSelectedButtonIndex()
+	public void RemoveButton(int index)
 	{
-		_selectedBorder.Reparent(this, keepGlobalTransform: false);
-		_selectedBorder.Hide();
-		var button = _cardButtonGroup.GetPressedButton();
+		var button = _cardButtonGroup.GetButtons().ElementAtOrDefault(index);
 		if(button is not null)
 		{
-			button.ButtonPressed = false;
+			if(button.ButtonPressed)
+			{
+				_selectedBorder.Reparent(this, keepGlobalTransform: false);		//secure it before deletion
+				_selectedBorder.Hide();			
+			}
 			button.Free();			
-		}
+		}		
 	}
-	
+
 	//move the selected border to currently pressed button
 	public void UpdateSelectedBorder()
 	{
@@ -89,10 +102,12 @@ public partial class Hand : HBoxContainer
 		}
 	}
 	
+	//Draw 1 moon card randomly
 	public void DrawCardRandomly()
 	{
 		DrawCard(_rng.RandiRange(0,7));		
 	}
+	
 	//Draw moon card and add it to player hand
 	public void DrawCard(int phase)
 	{
@@ -112,11 +127,6 @@ public partial class Hand : HBoxContainer
 
 		card.Position = new Vector2(cardButton.CustomMinimumSize.X/2, cardButton.CustomMinimumSize.Y/2);
 
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
 	}
 
 	public void OnButtonPressed()

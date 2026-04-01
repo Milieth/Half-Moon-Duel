@@ -39,17 +39,21 @@ public enum Player
 
 public partial class MoonGame : Control
 {
+	[Signal]
+	public delegate void GameFinishedEventHandler(string withError);
 	private Player MultiplayerAuth = Player.Server;
 	private Board _board;
 	private Dictionary<Player, PlayerScore> _score;
 	private Dictionary<Player, Hand> _hand = new();
 	private Dictionary<Player, MoonCard.Color> _playerColor = new();
-
 	private Player _activePlayer = Player.None;
+
+	private RandomNumberGenerator _rng= new();
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_rng.Randomize();
 		_board = GetNode<Board>("Board");
 		foreach(var node in _board._nodes.Values)
 			node.OnBoardNodePressed += OnNodePressed;
@@ -70,8 +74,32 @@ public partial class MoonGame : Control
             { Player.Client, GetNode<Hand>($"{_playerColor[Player.Client]}Hand") }
 		};
 
+		MultiplayerAuth = GetTree().GetMultiplayer().IsServer()? Player.Server : Player.Client;
+		if(MultiplayerAuth == Player.Server)
+		{
+			for(int i = 0; i < 2; i++)
+			{
+				DrawCardRandomly(Player.Server);
+				DrawCardRandomly(Player.Client);
+			}			
+			DrawCardRandomly(Player.Client);
+		}
+
 		InitLayout(MultiplayerAuth);
-		SetGameTurn(MultiplayerAuth);
+		SetGameTurn((int)Player.Client);
+	}
+
+	// (Server Only) Draw card randomly to target player hand
+	private void DrawCardRandomly(Player player)
+	{
+		int phase = _rng.RandiRange(0,7);
+		Rpc(nameof(DrawCard), (int)player, phase);
+	}
+
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void DrawCard(int player, int phase)
+	{
+		_hand[(Player)player].DrawCard(phase);
 	}
 
 	//setting game layout for this player, wheter use bright side or dark side
@@ -109,28 +137,35 @@ public partial class MoonGame : Control
 		return MultiplayerAuth == _activePlayer;
 	}
 
-	//change player turn to the next player
-	private void SwitchPlayerTurn()
+	//return the opposite of current active player
+	private Player GetNextPlayerTurn()
 	{
-		if(_activePlayer == Player.Server) SetGameTurn(Player.Client);
-		else SetGameTurn(Player.Server);
+		return (_activePlayer == Player.Server)? Player.Client : Player.Server;
 	}
 
 	//change game turn owner
-	private void SetGameTurn(Player player)
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void SetGameTurn(int player)
 	{
 		foreach(var playerScore in _score.Values)
 			playerScore._activeIcon.Hide();
 
-		_activePlayer = player;
+		_activePlayer = (Player)player;
 		if(IsYourTurn())
 		{
 			_hand[MultiplayerAuth].ShowAllCard();
 			_score[MultiplayerAuth]._activeIcon.Show();
 			_board.Disabled(false);
 		}
+		else if(_activePlayer == Player.None)
+		{	
+			//waiting server to finish processing
+			_hand[MultiplayerAuth].ShowAllCard(true);
+			_board.Disabled(true);
+		}
 		else
 		{
+			//opponent turn
 			_hand[MultiplayerAuth].ShowAllCard(true);
 			var opponent = (MultiplayerAuth == Player.Server)? Player.Client : Player.Server;
 			_score[opponent]._activeIcon.Show();
@@ -222,26 +257,36 @@ public partial class MoonGame : Control
 
 	private void OnNodePressed(string nodeID)
 	{
-		if(PlaceCard(nodeID))
+		GD.Print($"Node Pressed:{nodeID}");
+		if(!GetTree().GetMultiplayer().IsServer())
 		{
-			var matchEvents = GetCardEvents(nodeID);
-			if(matchEvents is not null)
-			{
-				foreach(var matchEvent in matchEvents)
-				{
-					matchEvent.print();
-					_score[MultiplayerAuth].IncreaseScore(matchEvent._score);
-					_board.SetCardsColor(matchEvent._nodes, _playerColor[MultiplayerAuth]);
-					_board.SetConnectionLineByEvent(matchEvent);
-				}
-			}
+			SetGameTurn((int)Player.None);
+			RpcId(1, nameof(ValidateMove), nodeID, _hand[Player.Client].GetSelectedButtonIndex(), (int)Player.Client);
+		}
+		else
+		{
+			ValidateMove(nodeID, _hand[Player.Server].GetSelectedButtonIndex(), (int)Player.Server);
 		}
 
-		if(_board.IsBoardFull())
-		{
-			GainBonusPoint(MultiplayerAuth);
-		}
-		_hand[MultiplayerAuth].DrawCardRandomly();
+		// if(PlaceCard(nodeID))
+		// {
+		// 	var matchEvents = GetCardEvents(nodeID);
+		// 	if(matchEvents is not null)
+		// 	{
+		// 		foreach(var matchEvent in matchEvents)
+		// 		{
+		// 			matchEvent.print();
+		// 			_score[MultiplayerAuth].IncreaseScore(matchEvent._score);
+		// 			_board.SetCardsColor(matchEvent._nodes, _playerColor[MultiplayerAuth]);
+		// 			_board.SetConnectionLineByEvent(matchEvent);
+		// 		}
+		// 	}
+		// }
+
+		// if(_board.IsBoardFull())
+		// {
+		// 	GainBonusPoint(MultiplayerAuth);
+		// }
 	}	
 
 	//Player gain bonus point during end of game
@@ -252,18 +297,34 @@ public partial class MoonGame : Control
 		GD.Print($"{player.ToString()} Gain Bonus:{bonus}");
 	}
 
-	//move card from player hand to board node
-	private bool PlaceCard(string nodeID)
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private bool ValidateMove(string nodeID, int cardIndex, int sender)
 	{
-		GD.Print($"Node Pressed:{nodeID}");
-		var card = _hand[MultiplayerAuth].GetSelectedCard();
-		if(card is not null)
+		bool validCard = _hand[(Player)sender].ValidCard(cardIndex);
+		bool nodeIsEmpty = _board._nodes[nodeID]._card is null;
+		bool validPlayer = _activePlayer == (Player)sender;
+		bool valid = validCard && nodeIsEmpty && validPlayer;
+		if(valid)
 		{
-			_board.PlaceCard(nodeID, card);
-			_hand[MultiplayerAuth].RemoveSelectedButton();
-			return true;
+			Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
+			DrawCardRandomly(GetNextPlayerTurn());
+			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
 		}
+		else
+		{
+			GD.Print("Invalid Move, Try Again");
+			Rpc(nameof(SetGameTurn), (int)_activePlayer);
+		}
+		return valid;
+	}
 
-		return false;		
+	//move card from player hand to board node
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void PlaceCard(string nodeID, int cardIndex, int sender)
+	{
+		var card = _hand[(Player)sender].GetCard(cardIndex);
+		card.FlipFaceUp();
+		_board.PlaceCard(nodeID, card);
+		_hand[(Player)sender].RemoveButton(cardIndex);
 	}
 }

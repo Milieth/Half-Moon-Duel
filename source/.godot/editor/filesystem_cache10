@@ -1,10 +1,10 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1774953384
-Board.cs::CSharpScript::8628534529894787402::1774931902::0::1::::<>Control<><>0<>0<><>::
-Board.tscn::PackedScene::5967546390662464402::1774575032::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
+::res://::1775001147
+Board.cs::CSharpScript::8628534529894787402::1774961477::0::1::::<>Control<><>0<>0<><>::
+Board.tscn::PackedScene::5967546390662464402::1774956672::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 BoardNode.cs::CSharpScript::4742371843364253084::1774659672::0::1::::<>TextureButton<><>0<>0<><>::
 board_node.tscn::PackedScene::3138308277157932703::1774509768::0::1::::<><><>0<>0<><>::uid://b0urt3qe7mhsq::::res://aset/node_normal.png<>uid://b8tif3el8jxtc::::res://BoardNode.cs<>uid://44i70cdbwceo::::res://aset/node_pressed.png
-ConnectionLine.cs::CSharpScript::3417983706473869569::1774927777::0::1::::<>Node2D<><>0<>0<><>::
+ConnectionLine.cs::CSharpScript::3417983706473869569::1774955516::0::1::::<>Node2D<><>0<>0<><>::
 connection_line.tscn::PackedScene::402734714144241649::1774929416::0::1::::<><><>0<>0<><>::uid://boxxxsjb624c8::::res://ConnectionLine.cs<>uid://bmuwvop6pugq0::::res://aset/white pair.png
 export_presets.cfg::TextFile::-1::1773883938::0::1::::<><><>0<>0<><>::
 Hand.cs::CSharpScript::3472205880084353551::1774671066::0::1::::<>HBoxContainer<><>0<>0<><>::
@@ -12,10 +12,10 @@ hand.tscn::PackedScene::1845477473094571743::1774581077::0::1::::<><><>0<>0<><>:
 icon.svg::CompressedTexture2D::6716958502443264032::1773661777::1773661814::1::::<><><>0<>0<>814355a000037b52da73c2731abc5f84<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 LobbyUi.cs::CSharpScript::4371792018210056739::1773855706::0::1::::<>Control<><>0<>0<><>::
 lobby_ui.tscn::PackedScene::8201996635074740717::1773855895::0::1::::<><><>0<>0<><>::uid://b3jy1m3s8xtnv::::res://LobbyUi.cs
-MoonCard.cs::CSharpScript::7336139192785651143::1774925737::0::1::::<>Sprite2D<><>0<>0<><>::
-MoonGame.cs::CSharpScript::7725466754925918270::1774917176::0::1::::<>Control<><>0<>0<><>::
+MoonCard.cs::CSharpScript::7336139192785651143::1774958801::0::1::::<>Sprite2D<><>0<>0<><>::
+MoonGame.cs::CSharpScript::7725466754925918270::1774967861::0::1::::<>Control<><>0<>0<><>::
 moon_card.tscn::PackedScene::7915833378190782150::1774916450::0::1::::<><><>0<>0<><>::uid://cak424xoqv6ir::::res://aset/card_back.png<>uid://dcrxe1vmgt3a6::::res://MoonCard.cs<>uid://culrx02ksmchf::::res://aset/MoonCard_1.webp
-moon_game.tscn::PackedScene::4743267498853376557::1774878042::0::1::::<><><>0<>0<><>::uid://crayu8p3h10ug::::res://Board.tscn<>uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn<>uid://cxabyacn2uqgw::::res://player_score.tscn
+moon_game.tscn::PackedScene::4743267498853376557::1774967192::0::1::::<><><>0<>0<><>::uid://crayu8p3h10ug::::res://Board.tscn<>uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn<>uid://cxabyacn2uqgw::::res://player_score.tscn
 paper.jpg::CompressedTexture2D::2739050624575070407::1763299232::1773770866::1::::<><><>0<>0<>5609a42e8ba37152ad92f4a62b922d5d<>res://.godot/imported/paper.jpg-9469f63d708c97ca8bac06146d0195bd.ctex::
 PlayerScore.cs::CSharpScript::1187979573400436270::1774879999::0::1::::<>HBoxContainer<><>0<>0<><>::
 player_score.tscn::PackedScene::6387288350824586130::1774877792::0::1::::<><><>0<>0<><>::uid://q6p35uygelhu::::res://PlayerScore.cs<>uid://bbmo15m78qjeo::::res://aset/white star.png

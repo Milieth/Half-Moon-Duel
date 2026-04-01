@@ -43,25 +43,22 @@ public partial class MoonCard : Sprite2D
 		return _frontIcon.Texture.GetSize();
 	}
 
+	// change moon card color
 	public void SetColor(Color colorType)
 	{
-		_color = colorType;
-		UpdateColor();
-	}
-	public void UpdateColor()
-	{
-		_frontIcon.SelfModulate = _color switch
+		_frontIcon.SelfModulate = colorType switch
 		{
 			Color.Bright => new Godot.Color(1.0f, 1.0f, 1.0f) * 2.0f,
 			Color.Dark => new Godot.Color(1.0f, 1.0f, 1.0f, 2.0f) * 0.5f,
 			_ => new Godot.Color(1.0f, 1.0f, 1.0f)
 		};
+		_color = colorType;
 	}
 
 	//change moon phase id and icon
 	public void SetMoonPhase(int phase)
 	{
-		_phase = phase % 8;	//phase is number from 0-7 this should not change anything
+		_phase = (phase + 8) % 8;	//phase is number from 0-7 this should not change anything, and prevent invalid numb
 		_frontIcon.Texture = GD.Load<Texture2D>($"res://aset/MoonCard_{phase}.webp");
 	}
 

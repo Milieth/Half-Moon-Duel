@@ -39,24 +39,102 @@ public enum Player
 
 public partial class MoonGame : Control
 {
-	private Dictionary<Player, PlayerScore> _score;
+	private Player MultiplayerAuth = Player.Server;
 	private Board _board;
-	private Hand _hand;
+	private Dictionary<Player, PlayerScore> _score;
+	private Dictionary<Player, Hand> _hand = new();
+	private Dictionary<Player, MoonCard.Color> _playerColor = new();
+
+	private Player _activePlayer = Player.None;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_board = GetNode<Board>("Board");
+		foreach(var node in _board._nodes.Values)
+			node.OnBoardNodePressed += OnNodePressed;
+
+		_playerColor = new()
+		{
+			{Player.Server, MoonCard.Color.Bright},
+			{Player.Client, MoonCard.Color.Dark}
+		};
 		_score = new()
         {
-            { Player.Server, GetNode<PlayerScore>("WhiteScore") },
-            { Player.Client, GetNode<PlayerScore>("BlackScore") }
+            { Player.Server, GetNode<PlayerScore>($"{_playerColor[Player.Server]}Score") },
+            { Player.Client, GetNode<PlayerScore>($"{_playerColor[Player.Client]}Score") }
         };
-
-		_board = GetNode<Board>("Board");
-		_hand = GetNode<Hand>("Hand");
-
-		foreach(var node in _board._nodes.Values)
+		_hand = new()
 		{
-			node.OnBoardNodePressed += OnNodePressed;
+            { Player.Server, GetNode<Hand>($"{_playerColor[Player.Server]}Hand") },
+            { Player.Client, GetNode<Hand>($"{_playerColor[Player.Client]}Hand") }
+		};
+
+		InitLayout(MultiplayerAuth);
+		SetGameTurn(MultiplayerAuth);
+	}
+
+	//setting game layout for this player, wheter use bright side or dark side
+	private void InitLayout(Player front)
+	{
+		foreach(var (player, hand) in _hand)
+		{
+			if(player == front)
+			{
+				hand.Position = new Vector2(640, 630);
+			}
+			else
+			{
+				hand.Position = new Vector2(640, 80);
+				hand.HideAllCard();
+			}
+		}
+
+		foreach(var (player, score) in _score)
+		{
+			if(player == front)
+			{
+				score.Position = new Vector2(62, 489);
+			}
+			else
+			{
+				score.Position = new Vector2(1088, 193);
+			}
+		}
+	}
+
+	//wheter this is your turn or opponent turn
+	private bool IsYourTurn()
+	{
+		return MultiplayerAuth == _activePlayer;
+	}
+
+	//change player turn to the next player
+	private void SwitchPlayerTurn()
+	{
+		if(_activePlayer == Player.Server) SetGameTurn(Player.Client);
+		else SetGameTurn(Player.Server);
+	}
+
+	//change game turn owner
+	private void SetGameTurn(Player player)
+	{
+		foreach(var playerScore in _score.Values)
+			playerScore._activeIcon.Hide();
+
+		_activePlayer = player;
+		if(IsYourTurn())
+		{
+			_hand[MultiplayerAuth].ShowAllCard();
+			_score[MultiplayerAuth]._activeIcon.Show();
+			_board.Disabled(false);
+		}
+		else
+		{
+			_hand[MultiplayerAuth].ShowAllCard(true);
+			var opponent = (MultiplayerAuth == Player.Server)? Player.Client : Player.Server;
+			_score[opponent]._activeIcon.Show();
+			_board.Disabled(true);
 		}
 	}
 
@@ -152,25 +230,37 @@ public partial class MoonGame : Control
 				foreach(var matchEvent in matchEvents)
 				{
 					matchEvent.print();
-					_score[Player.Server].IncreaseScore(matchEvent._score);
-					_board.SetCardsColor(matchEvent._nodes, MoonCard.Color.Bright);
+					_score[MultiplayerAuth].IncreaseScore(matchEvent._score);
+					_board.SetCardsColor(matchEvent._nodes, _playerColor[MultiplayerAuth]);
 					_board.SetConnectionLineByEvent(matchEvent);
 				}
 			}
 		}
 
-		_hand.DrawCardRandomly();
+		if(_board.IsBoardFull())
+		{
+			GainBonusPoint(MultiplayerAuth);
+		}
+		_hand[MultiplayerAuth].DrawCardRandomly();
+	}	
+
+	//Player gain bonus point during end of game
+	private void GainBonusPoint(Player player)
+	{
+		var bonus = _board.CountCardsByColor(_playerColor[player]);
+		_score[player].IncreaseScore(bonus);
+		GD.Print($"{player.ToString()} Gain Bonus:{bonus}");
 	}
 
 	//move card from player hand to board node
 	private bool PlaceCard(string nodeID)
 	{
 		GD.Print($"Node Pressed:{nodeID}");
-		var card = _hand.GetSelectedCard();
+		var card = _hand[MultiplayerAuth].GetSelectedCard();
 		if(card is not null)
 		{
 			_board.PlaceCard(nodeID, card);
-			_hand.RemoveSelectedButton();
+			_hand[MultiplayerAuth].RemoveSelectedButton();
 			return true;
 		}
 

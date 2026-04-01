@@ -17,12 +17,17 @@ script = ExtResource("1_ehahf")
 [node name="Board" parent="." unique_id=1642530234 instance=ExtResource("1_a445s")]
 layout_mode = 1
 
-[node name="Hand" parent="." unique_id=938261323 instance=ExtResource("2_ehahf")]
+[node name="BrightHand" parent="." unique_id=938261323 instance=ExtResource("2_ehahf")]
 layout_mode = 1
 offset_top = 270.0
 offset_bottom = 270.0
 
-[node name="WhiteScore" parent="." unique_id=951343626 instance=ExtResource("4_vnm5s")]
+[node name="DarkHand" parent="." unique_id=1479339597 instance=ExtResource("2_ehahf")]
+layout_mode = 1
+offset_top = -280.0
+offset_bottom = -280.0
+
+[node name="BrightScore" parent="." unique_id=951343626 instance=ExtResource("4_vnm5s")]
 layout_mode = 1
 offset_left = -578.0
 offset_top = 129.0
@@ -30,7 +35,7 @@ offset_right = -511.0
 offset_bottom = 169.0
 scale = Vector2(1.5, 1.5)
 
-[node name="BlackScore" parent="." unique_id=688299629 instance=ExtResource("4_vnm5s")]
+[node name="DarkScore" parent="." unique_id=688299629 instance=ExtResource("4_vnm5s")]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 offset_left = 448.0

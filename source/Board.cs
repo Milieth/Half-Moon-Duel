@@ -9,6 +9,13 @@ public partial class Board : Control
 	public Dictionary<string, BoardNode> _nodes{get;set;} = new();
 	public Dictionary<string, ConnectionLine> _edgeConnection{get;set;} = new();
 
+	//if disabled, prevent user to click board node
+	public void Disabled(bool isDisabled)
+	{
+		foreach(var node in _nodes.Values)
+			node.Disabled = isDisabled;
+	}
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -21,6 +28,35 @@ public partial class Board : Control
 		}
 		
 		ConnectEdgeOfEveryNodes();
+	}
+
+	//return true if no more card can be attached in board, false otherwise
+	public bool IsBoardFull()
+	{
+		return CountEmptyNodes() == 0;
+	}
+
+	//return many nodes with no card attach to it
+	public int CountEmptyNodes()
+	{
+		int manyNodes = 0;
+		foreach(var node in _nodes.Values)
+			if(node._card is null)
+				manyNodes++;
+
+		return manyNodes;
+	}
+
+	//return many cards in board with given color
+	public int CountCardsByColor(MoonCard.Color colorType)
+	{
+		int manyCards = 0;
+		foreach(var node in _nodes.Values)
+			if(node._card is not null)
+				if(node._card._color == colorType)
+					manyCards++;
+		
+		return manyCards;
 	}
 
 	//setting cards color bright or dark

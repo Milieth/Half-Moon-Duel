@@ -1,8 +1,9 @@
-res://Board.cs
 res://ConnectionLine.cs
-res://MoonGame.cs
 res://PlayerScore.cs
+res://MoonGame.cs
 res://Hand.cs
+res://Board.cs
 res://MoonCard.cs
 res://BoardNode.cs
-res://Board.tscn
+res://RpsUi.cs
+res://player_score.tscn

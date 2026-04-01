@@ -24,26 +24,28 @@ public partial class Hand : HBoxContainer
 	}
 
 	//close cards face down prevent other player to see it
-	public void HideAllCard()
+	public void HideAllCard(bool isDisable = true)
 	{
 		foreach(var button in _cardButtonGroup.GetButtons())
 		{
 			var card = button.GetNode<MoonCard>("MoonCard");
-			card.FlipFaceDown();
+			if(card is not null)
+				card.FlipFaceDown();
 
-			button.Disabled = true;
+			button.Disabled = isDisable;
 		}
 	}
 
 	//turn cards face up reveal its moon phase icon
-	public void ShowAllCard()
+	public void ShowAllCard(bool isDisable = false)
 	{
 		foreach(var button in _cardButtonGroup.GetButtons())
 		{
 			var card = button.GetNode<MoonCard>("MoonCard");
-			card.FlipFaceUp();
+			if(card is not null)
+				card.FlipFaceUp();
 
-			button.Disabled = false;
+			button.Disabled = isDisable;
 		}
 	}
 
@@ -57,7 +59,7 @@ public partial class Hand : HBoxContainer
 		return button.GetNode<MoonCard>("MoonCard");
 	}
 
-	//remove selected button in hand ButtonGroup 
+	//remove selected button in hand ButtonGroup immadiately
 	public void RemoveSelectedButton()
 	{
 		_selectedBorder.Reparent(this, keepGlobalTransform: false);
@@ -66,7 +68,7 @@ public partial class Hand : HBoxContainer
 		if(button is not null)
 		{
 			button.ButtonPressed = false;
-			button.QueueFree();			
+			button.Free();			
 		}
 	}
 	

@@ -4,9 +4,16 @@ using System.Linq;
 
 public partial class Hand : HBoxContainer
 {
+	public enum RevealMode
+	{
+		FaceUp,
+		FaceDown
+	}
+
 	public ButtonGroup _cardButtonGroup{get;set;} = new();
 	private ReferenceRect _selectedBorder;
 	private RandomNumberGenerator _rng= new();
+	private RevealMode _revealMode = RevealMode.FaceUp;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -15,6 +22,15 @@ public partial class Hand : HBoxContainer
 		_selectedBorder = GetNode<ReferenceRect>("SelectedBorder");
 
 		_rng.Randomize();
+	}
+
+	//wheter close the cards in hand or reveal it face up
+	public void SetRevealMode(RevealMode revealMode)
+	{
+		if(revealMode == RevealMode.FaceDown) HideAllCard();
+		else ShowAllCard();
+
+		_revealMode = revealMode;
 	}
 
 	//close cards face down prevent other player to see it
@@ -124,9 +140,13 @@ public partial class Hand : HBoxContainer
 		cardButton.CustomMinimumSize = card.GetSize();
 		cardButton.Pressed += OnButtonPressed;
 		cardButton.ButtonGroup = _cardButtonGroup;
+		if(_revealMode == RevealMode.FaceDown)
+		{
+			card.FlipFaceDown();
+			cardButton.Disabled = true;
+		}
 
 		card.Position = new Vector2(cardButton.CustomMinimumSize.X/2, cardButton.CustomMinimumSize.Y/2);
-
 	}
 
 	public void OnButtonPressed()

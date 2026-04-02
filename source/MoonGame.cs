@@ -8,18 +8,69 @@ public class CardMatchEvent
 	public MoonCard.Pattern _pattern{get;set;}
 	public List<string> _nodes{get;set;}
 	public int _score{get;set;}
-	public string _owner{get;set;}
+	public Player _owner{get;set;}
+
+	static public Godot.Collections.Array CreateRPCsPackedArr(List<CardMatchEvent> matchEventList)
+	{
+		Godot.Collections.Array matchEventArr = new();
+		
+		foreach(var matchEvent in matchEventList)
+			matchEventArr.Add(matchEvent.CreateRPCsPacked());
+		
+		return matchEventArr;
+	}
+
+	static public List<CardMatchEvent> UnpackingRPCsPacked(Godot.Collections.Array matchEventArr)
+	{
+		List<CardMatchEvent> matchEventList = new();
+		foreach(Godot.Collections.Dictionary dict in matchEventArr)
+		{
+			var matchEvent = new CardMatchEvent
+			(
+				(int)dict["Pattern"], 
+				(string)dict["Nodes"], 
+				(int)dict["Score"], 
+				(int)dict["Owner"]
+			);
+			matchEventList.Add(matchEvent);
+		}
+
+		return matchEventList;		
+	}
+
 
 	public CardMatchEvent()
 	{
 	}
 
-	public CardMatchEvent(MoonCard.Pattern pattern, List<string> nodes, int score, string owner)
+	public CardMatchEvent(MoonCard.Pattern pattern, List<string> nodes, int score, Player owner)
 	{
 		_pattern = pattern;
 		_nodes = nodes;
 		_score = score;
 		_owner = owner;
+	}
+
+	//use this for unboxing RPCs packed
+	public CardMatchEvent(int pattern, string nodes, int score, int owner)
+	{
+		_pattern = (MoonCard.Pattern)pattern;
+		_nodes = nodes.Select(c => c.ToString()).ToList();
+		_score = score;
+		_owner = (Player)owner;
+	}
+
+	//packed card match event data for RPCs
+	public Godot.Collections.Dictionary CreateRPCsPacked()
+	{
+		var dict = new Godot.Collections.Dictionary
+        {
+            ["Pattern"] = (int)_pattern,
+            ["Nodes"] = string.Join("", _nodes),
+            ["Score"] = _score,
+            ["Owner"] = (int)_owner
+        };
+		return dict;
 	}
 
 	//print card match event data to console
@@ -114,7 +165,7 @@ public partial class MoonGame : Control
 			else
 			{
 				hand.Position = new Vector2(640, 80);
-				hand.HideAllCard();
+				hand.SetRevealMode(Hand.RevealMode.FaceDown);
 			}
 		}
 
@@ -174,7 +225,7 @@ public partial class MoonGame : Control
 	}
 
 	//construct phase pair event from target node, if there are no event occured return null
-	private List<CardMatchEvent> GetPhasePairEvent(string targetNodeID)
+	private List<CardMatchEvent> GetPhasePairEvent(string targetNodeID, Player player)
 	{
 		var phasePair = _board.GetPhasePairList(targetNodeID);
 		if(phasePair.Count == 0)
@@ -187,7 +238,7 @@ public partial class MoonGame : Control
 				pattern: MoonCard.Pattern.PhasePair,
 				nodes: nodes,
 				score: 1,
-				owner: "Server"
+				owner: player
 			);
 			pairEvent.Add(matchEvent);
 		}
@@ -195,7 +246,7 @@ public partial class MoonGame : Control
 		return pairEvent;		
 	}
 
-	private List<CardMatchEvent> GetFullPhaseEvent(string targetNodeID)
+	private List<CardMatchEvent> GetFullPhaseEvent(string targetNodeID, Player player)
 	{
 		var fullPhase = _board.GetFullPhaseList(targetNodeID);
 		if(fullPhase.Count == 0)
@@ -208,7 +259,7 @@ public partial class MoonGame : Control
 				pattern: MoonCard.Pattern.FullPhase,
 				nodes: nodes,
 				score: 2,
-				owner: "Server"
+				owner: player
 			);
 			fullEvent.Add(matchEvent);
 		}
@@ -216,7 +267,7 @@ public partial class MoonGame : Control
 		return fullEvent;
 	}
 
-	private List<CardMatchEvent> GetPhaseSequenceEvent(string targetNodeID)
+	private List<CardMatchEvent> GetPhaseSequenceEvent(string targetNodeID, Player player)
 	{
 		var phaseSequence = _board.GetPhaseSequenceList(targetNodeID);
 		if(phaseSequence.Count == 0)
@@ -229,7 +280,7 @@ public partial class MoonGame : Control
 				pattern: MoonCard.Pattern.PhaseSequence,
 				nodes: nodes,
 				score: nodes.Count + 7*(nodes.Count / 8),
-				owner: "Server"
+				owner: player
 			);
 			sequenceEvent.Add(matchEvent);
 		}
@@ -238,11 +289,11 @@ public partial class MoonGame : Control
 	}
 
 	//construct all card events that detected, if there are no event occured return null
-	private List<CardMatchEvent> GetCardEvents(string targetNodeID)
+	private List<CardMatchEvent> GetCardEvents(string targetNodeID, Player player)
 	{
-		var pair = GetPhasePairEvent(targetNodeID);
-		var full = GetFullPhaseEvent(targetNodeID);
-		var sequence = GetPhaseSequenceEvent(targetNodeID);
+		var pair = GetPhasePairEvent(targetNodeID, player);
+		var full = GetFullPhaseEvent(targetNodeID, player);
+		var sequence = GetPhaseSequenceEvent(targetNodeID, player);
 
 		var allEvents = new List<CardMatchEvent>();
 		if(pair is not null)
@@ -267,34 +318,23 @@ public partial class MoonGame : Control
 		{
 			ValidateMove(nodeID, _hand[Player.Server].GetSelectedButtonIndex(), (int)Player.Server);
 		}
-
-		// if(PlaceCard(nodeID))
-		// {
-		// 	var matchEvents = GetCardEvents(nodeID);
-		// 	if(matchEvents is not null)
-		// 	{
-		// 		foreach(var matchEvent in matchEvents)
-		// 		{
-		// 			matchEvent.print();
-		// 			_score[MultiplayerAuth].IncreaseScore(matchEvent._score);
-		// 			_board.SetCardsColor(matchEvent._nodes, _playerColor[MultiplayerAuth]);
-		// 			_board.SetConnectionLineByEvent(matchEvent);
-		// 		}
-		// 	}
-		// }
-
-		// if(_board.IsBoardFull())
-		// {
-		// 	GainBonusPoint(MultiplayerAuth);
-		// }
 	}	
 
-	//Player gain bonus point during end of game
-	private void GainBonusPoint(Player player)
+	//(Server) Player gain bonus point during end of game
+	private void GainBonusPoint()
 	{
-		var bonus = _board.CountCardsByColor(_playerColor[player]);
-		_score[player].IncreaseScore(bonus);
-		GD.Print($"{player.ToString()} Gain Bonus:{bonus}");
+		int serverBonus = _board.CountCardsByColor(_playerColor[Player.Server]);
+		int clientBonus = _board.CountCardsByColor(_playerColor[Player.Client]);
+		Rpc(nameof(ImplementBonusPoint), serverBonus, clientBonus);
+	}
+
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ImplementBonusPoint(int serverBonus, int clientBonus)
+	{
+		_score[Player.Server].IncreaseScore(serverBonus);
+		GD.Print($"{Player.Server} Gain Bonus:{serverBonus}");		
+		_score[Player.Client].IncreaseScore(clientBonus);
+		GD.Print($"{Player.Client} Gain Bonus:{clientBonus}");
 	}
 
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -306,9 +346,7 @@ public partial class MoonGame : Control
 		bool valid = validCard && nodeIsEmpty && validPlayer;
 		if(valid)
 		{
-			Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
-			DrawCardRandomly(GetNextPlayerTurn());
-			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
+			ExecuteMove(nodeID, cardIndex, sender);
 		}
 		else
 		{
@@ -316,6 +354,41 @@ public partial class MoonGame : Control
 			Rpc(nameof(SetGameTurn), (int)_activePlayer);
 		}
 		return valid;
+	}
+
+	private void ExecuteMove(string nodeID, int cardIndex, int sender)
+	{
+		Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
+
+		var matchEvent = GetCardEvents(nodeID, (Player)sender);
+		if(matchEvent is not null)
+			Rpc(nameof(ImplementCardEvents), CardMatchEvent.CreateRPCsPackedArr(matchEvent));
+		
+		//next phase
+		if(!_board.IsBoardFull())
+		{
+			DrawCardRandomly(GetNextPlayerTurn());
+			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
+		}
+		else
+		{
+			Rpc(nameof(SetGameTurn), (int)Player.None);
+			GainBonusPoint();
+			GD.Print("End The Game");
+		}
+	}
+
+	//Implement card pattern matching events
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ImplementCardEvents(Godot.Collections.Array matchEventArr)
+	{
+		foreach(var matchEvent in CardMatchEvent.UnpackingRPCsPacked(matchEventArr))
+		{
+			matchEvent.print();
+			_score[matchEvent._owner].IncreaseScore(matchEvent._score);
+			_board.SetCardsColor(matchEvent._nodes, _playerColor[matchEvent._owner]);
+			_board.SetConnectionLineByEvent(matchEvent);
+		}
 	}
 
 	//move card from player hand to board node

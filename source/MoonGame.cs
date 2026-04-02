@@ -98,6 +98,8 @@ public partial class MoonGame : Control
 	private Dictionary<Player, Hand> _hand = new();
 	private Dictionary<Player, MoonCard.Color> _playerColor = new();
 	private Player _activePlayer = Player.None;
+	private Label _prompt;
+	private Button _exitButton;
 
 	private RandomNumberGenerator _rng= new();
 
@@ -105,6 +107,11 @@ public partial class MoonGame : Control
 	public override void _Ready()
 	{
 		_rng.Randomize();
+
+		_exitButton = GetNode<Button>("ExitButton");
+		_exitButton.Pressed += OnExitButtonPressed; 
+		_prompt = GetNode<Label>("Prompt");
+		_prompt.Text = "";
 		_board = GetNode<Board>("Board");
 		foreach(var node in _board._nodes.Values)
 			node.OnBoardNodePressed += OnNodePressed;
@@ -206,13 +213,13 @@ public partial class MoonGame : Control
 		{
 			_hand[MultiplayerAuth].ShowAllCard();
 			_score[MultiplayerAuth]._activeIcon.Show();
-			_board.Disabled(false);
+			_board.Disabled(false, true);
 		}
 		else if(_activePlayer == Player.None)
 		{	
 			//waiting server to finish processing
 			_hand[MultiplayerAuth].ShowAllCard(true);
-			_board.Disabled(true);
+			_board.Disabled(true, true);
 		}
 		else
 		{
@@ -220,7 +227,7 @@ public partial class MoonGame : Control
 			_hand[MultiplayerAuth].ShowAllCard(true);
 			var opponent = (MultiplayerAuth == Player.Server)? Player.Client : Player.Server;
 			_score[opponent]._activeIcon.Show();
-			_board.Disabled(true);
+			_board.Disabled(true, true);
 		}
 	}
 
@@ -320,23 +327,6 @@ public partial class MoonGame : Control
 		}
 	}	
 
-	//(Server) Player gain bonus point during end of game
-	private void GainBonusPoint()
-	{
-		int serverBonus = _board.CountCardsByColor(_playerColor[Player.Server]);
-		int clientBonus = _board.CountCardsByColor(_playerColor[Player.Client]);
-		Rpc(nameof(ImplementBonusPoint), serverBonus, clientBonus);
-	}
-
-	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void ImplementBonusPoint(int serverBonus, int clientBonus)
-	{
-		_score[Player.Server].IncreaseScore(serverBonus);
-		GD.Print($"{Player.Server} Gain Bonus:{serverBonus}");		
-		_score[Player.Client].IncreaseScore(clientBonus);
-		GD.Print($"{Player.Client} Gain Bonus:{clientBonus}");
-	}
-
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private bool ValidateMove(string nodeID, int cardIndex, int sender)
 	{
@@ -356,6 +346,7 @@ public partial class MoonGame : Control
 		return valid;
 	}
 
+	//execute player move and its corresponding event
 	private void ExecuteMove(string nodeID, int cardIndex, int sender)
 	{
 		Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
@@ -374,8 +365,56 @@ public partial class MoonGame : Control
 		{
 			Rpc(nameof(SetGameTurn), (int)Player.None);
 			GainBonusPoint();
-			GD.Print("End The Game");
+			DetermineWinner();
 		}
+	}
+
+	//(Server) determine winner of the game and display it
+	private void DetermineWinner()
+	{
+		var server = _score[Player.Server].Score;
+		var client = _score[Player.Client].Score;
+		Player winner = Player.None;
+		if(server > client) winner = Player.Server;
+		else if(server < client) winner = Player.Client;
+		
+		Rpc(nameof(DisplayWinner), (int)winner);
+	}
+
+	//display winner prompt and exit button
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void DisplayWinner(int player)
+	{
+		if((Player)player != Player.None)
+		{
+			var color = _playerColor[(Player)player];
+			_prompt.Text = $"{color} Moon Win";
+			_prompt.SelfModulate = (color == MoonCard.Color.Bright)? 
+			new Godot.Color(1.0f, 1.0f, 1.0f):
+			new Godot.Color(0.0f, 0.0f, 0.0f);
+		}
+		else
+		{
+			_prompt.Text = "The Game Turned Draw.!!";
+		}
+
+		_exitButton.Show();		
+	}
+
+	//Close the moon game and return to lobby
+	private void OnExitButtonPressed()
+	{
+		EmitSignal("GameFinished", "Game Finished");
+	}
+
+	//move card from player hand to board node
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void PlaceCard(string nodeID, int cardIndex, int sender)
+	{
+		var card = _hand[(Player)sender].GetCard(cardIndex);
+		card.FlipFaceUp();
+		_board.PlaceCard(nodeID, card);
+		_hand[(Player)sender].RemoveButton(cardIndex);
 	}
 
 	//Implement card pattern matching events
@@ -391,13 +430,21 @@ public partial class MoonGame : Control
 		}
 	}
 
-	//move card from player hand to board node
-	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void PlaceCard(string nodeID, int cardIndex, int sender)
+	//(Server) Player gain bonus point based on many card they claimed at the end of game
+	private void GainBonusPoint()
 	{
-		var card = _hand[(Player)sender].GetCard(cardIndex);
-		card.FlipFaceUp();
-		_board.PlaceCard(nodeID, card);
-		_hand[(Player)sender].RemoveButton(cardIndex);
+		int serverBonus = _board.CountCardsByColor(_playerColor[Player.Server]);
+		int clientBonus = _board.CountCardsByColor(_playerColor[Player.Client]);
+		Rpc(nameof(ImplementBonusPoint), serverBonus, clientBonus);
+	}
+
+	//increase each player point
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ImplementBonusPoint(int serverBonus, int clientBonus)
+	{
+		_score[Player.Server].IncreaseScore(serverBonus);
+		GD.Print($"{Player.Server} Gain Bonus:{serverBonus}");		
+		_score[Player.Client].IncreaseScore(clientBonus);
+		GD.Print($"{Player.Client} Gain Bonus:{clientBonus}");
 	}
 }

@@ -24,10 +24,13 @@ public partial class Board : Control
 	}
 
 	//if disabled, prevent user to click board node
-	public void Disabled(bool isDisabled)
+	public void Disabled(bool isDisabled, bool onlyEmptyNode)
 	{
-		foreach(var node in _nodes.Values)
-			node.Disabled = isDisabled;
+		foreach (var node in _nodes.Values)
+		{
+			if (!onlyEmptyNode || node._card is null)
+				node.Disabled = isDisabled;
+		}
 	}
 
 	//return true if no more card can be attached in board, false otherwise

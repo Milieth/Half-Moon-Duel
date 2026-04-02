@@ -34,6 +34,7 @@ offset_top = 129.0
 offset_right = -511.0
 offset_bottom = 169.0
 scale = Vector2(1.5, 1.5)
+tooltip_text = "White Current Score"
 
 [node name="DarkScore" parent="." unique_id=688299629 instance=ExtResource("4_vnm5s")]
 modulate = Color(0, 0, 0, 1)
@@ -43,3 +44,28 @@ offset_top = -167.0
 offset_right = 515.0
 offset_bottom = -127.0
 scale = Vector2(1.5, 1.5)
+tooltip_text = "Black Current Score"
+
+[node name="Prompt" type="Label" parent="." unique_id=2107133845]
+self_modulate = Color(0.5882353, 0.5882353, 0.5882353, 1)
+layout_mode = 0
+offset_left = 443.0
+offset_top = 285.0
+offset_right = 855.0
+offset_bottom = 354.0
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 50
+text = "Player White Win"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ExitButton" type="Button" parent="." unique_id=2138045213]
+visible = false
+layout_mode = 0
+offset_left = 558.0
+offset_top = 381.0
+offset_right = 739.0
+offset_bottom = 424.0
+theme_override_font_sizes/font_size = 25
+text = "Exit The Game"

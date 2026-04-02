@@ -1,15 +1,14 @@
+Button
+Label
 Polygon2D
 Sprite2D
 Line2D
 Node2D
-Label
 TextureRect
 HBoxContainer
 Control
 ReferenceRect
-Button
 TextureButton
 GraphNode
 GraphEdit
 VBoxContainer
-Timer

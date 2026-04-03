@@ -139,7 +139,6 @@ public partial class LobbyUi : Control
 		if(HasNode("/root/MoonGame"))
 		{
 			GetNode("/root/MoonGame").Free();	
-			// GD.Print("/root/RPS_UI has been released");
 			Show();
 		}
 		CleanUpPeer();

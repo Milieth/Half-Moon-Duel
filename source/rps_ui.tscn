@@ -48,6 +48,7 @@ wait_time = 5.0
 one_shot = true
 
 [node name="ScoreLabel" type="VBoxContainer" parent="." unique_id=692979393]
+visible = false
 layout_mode = 0
 offset_left = 29.0
 offset_top = 26.0

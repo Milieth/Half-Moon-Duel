@@ -11,9 +11,12 @@ config_version=5
 [application]
 
 config/name="Half Moon Duel"
+config/description="Fan made LAN PVP board game Highly Inspired from \"Rise Of The Half Moon\" game"
+config/version="1.1"
 run/main_scene="uid://do4dxlkqs6df6"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/image="uid://hdq1lmgm1we3"
+config/icon="uid://cndgvif8675he"
 
 [display]
 

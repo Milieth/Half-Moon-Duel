@@ -19,17 +19,12 @@ public partial class RpsUi : Control
 		Paper,
 		Scissor
 	}
-	public enum Sender
-	{
-		Server,
-		Client
-	}
 
     [Signal]
-    public delegate void GameFinishedEventHandler(string withError);
+    public delegate void RPSFinishedEventHandler(int rpsWinner);
 
-	private Dictionary<Sender, Card> _chosenCard = new Dictionary<Sender, Card>();
-	private Dictionary<Sender, int> _playerScore = new Dictionary<Sender, int>();
+	private Dictionary<Player, Card> _chosenCard = new Dictionary<Player, Card>();
+	private Dictionary<Player, int> _playerScore = new Dictionary<Player, int>();
 	private HBoxContainer _rpsMenu;
 	private Label _result;
 	private Timer _nextRoundTimer;
@@ -38,7 +33,7 @@ public partial class RpsUi : Control
 	private TextureRect _yourCard;
 	private TextureRect _enemyCard;
 
-	private const int WinRequirement = 3;
+	private const int WinRequirement = 1;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -52,8 +47,8 @@ public partial class RpsUi : Control
 		_yourCard.Hide();
 		_enemyCard.Hide();
 
-		_playerScore[Sender.Server] = 0;
-		_playerScore[Sender.Client] = 0;
+		_playerScore[Player.Server] = 0;
+		_playerScore[Player.Client] = 0;
 
 		_nextRoundTimer = GetNode<Timer>("NextRoundTimer");
 		_nextRoundTimer.Timeout += RunNextRound;
@@ -81,11 +76,11 @@ public partial class RpsUi : Control
 		_rpsMenu.Hide();
 		if(GetTree().GetMultiplayer().IsServer())
 		{
-			CardSelected((int)Sender.Server, (int)card);			
+			CardSelected((int)Player.Server, (int)card);			
 		}
 		else
 		{
-			RpcId(1, nameof(CardSelected), (int)Sender.Client, (int)card);
+			RpcId(1, nameof(CardSelected), (int)Player.Client, (int)card);
 		}		
 	}
 
@@ -93,7 +88,7 @@ public partial class RpsUi : Control
     [Rpc(mode: MultiplayerApi.RpcMode.AnyPeer)]
 		private void CardSelected(int player, int card)
 	{
-		_chosenCard[(Sender)player] = (Card)card;
+		_chosenCard[(Player)player] = (Card)card;
 		if(_chosenCard.Count == 2)
 		{
 			DetermineWinner();
@@ -104,8 +99,8 @@ public partial class RpsUi : Control
 	private void DetermineWinner()
 	{
 		RPSResult result;
-		var serverCard = _chosenCard[Sender.Server];
-		var clientCard = _chosenCard[Sender.Client];
+		var serverCard = _chosenCard[Player.Server];
+		var clientCard = _chosenCard[Player.Client];
 		if(serverCard == clientCard)
 		{
 			result = RPSResult.Draw;
@@ -162,10 +157,10 @@ public partial class RpsUi : Control
 		switch((RPSResult)gameResult)
 		{
 			case RPSResult.ServerWin:
-				_playerScore[Sender.Server]++;
+				_playerScore[Player.Server]++;
 				break;
 			case RPSResult.ServerLose:
-				_playerScore[Sender.Client]++;
+				_playerScore[Player.Client]++;
 				break;
 			default:
 				break;
@@ -175,8 +170,8 @@ public partial class RpsUi : Control
 	//update player score label
 	private void UpdatePlayerScoreLabel()
 	{
-		var yourScore = GetTree().GetMultiplayer().IsServer()?_playerScore[Sender.Server]:_playerScore[Sender.Client];
-		var enemyScore = GetTree().GetMultiplayer().IsServer()?_playerScore[Sender.Client]:_playerScore[Sender.Server];
+		var yourScore = GetTree().GetMultiplayer().IsServer()?_playerScore[Player.Server]:_playerScore[Player.Client];
+		var enemyScore = GetTree().GetMultiplayer().IsServer()?_playerScore[Player.Client]:_playerScore[Player.Server];
 		_yourScore.Text = $"Your Score : {yourScore}";
 		_enemyScore.Text = $"Enemy Score : {enemyScore}";
 	}
@@ -184,20 +179,18 @@ public partial class RpsUi : Control
 	//this round ended, rematch or close the game
 	private void RunNextRound()
 	{
-		if(isPlayerWinTheGame())
-		{
-			Rpc(nameof(CloseAllRPSGame));
-		}
-		else
-		{
-			Rpc(nameof(RematchRPS));		
-		}
+		if(isPlayerWinTheGame()) Rpc(nameof(CloseAllRPSGame));
+		else Rpc(nameof(RematchRPS));
 	}
 
     [Rpc(mode: MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
 	private void CloseAllRPSGame()
 	{
-		EmitSignal("GameFinished", "Game Finished");		
+		var rpsWinner = Player.Client;
+		if(_playerScore[Player.Server] > _playerScore[Player.Client])
+			rpsWinner = Player.Server;
+
+		EmitSignal("RPSFinished", (int)rpsWinner);	
 	}
 
 	//rematch the game, reset rps game data
@@ -215,6 +208,9 @@ public partial class RpsUi : Control
 	//check if player score reach max score to win
 	private bool isPlayerWinTheGame()
 	{
-		return _playerScore[Sender.Server] == WinRequirement || _playerScore[Sender.Client] == WinRequirement;
+		bool serverMetReq = _playerScore[Player.Server] >= WinRequirement;
+		bool clientMetReq = _playerScore[Player.Client] >= WinRequirement;
+		bool sameScore = _playerScore[Player.Server] == _playerScore[Player.Client];
+		return (serverMetReq || clientMetReq) && !sameScore;
 	}
 }

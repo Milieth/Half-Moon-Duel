@@ -92,9 +92,9 @@ public partial class MoonGame : Control
 {
 	[Signal]
 	public delegate void GameFinishedEventHandler(string withError);
-	private Player MultiplayerAuth = Player.Server;
+	private Player _multiplayerAuth = Player.Server;
 	private Board _board;
-	private Dictionary<Player, PlayerScore> _score;
+	private Dictionary<Player, PlayerScore> _score = new();
 	private Dictionary<Player, Hand> _hand = new();
 	private Dictionary<Player, MoonCard.Color> _playerColor = new();
 	private Player _activePlayer = Player.None;
@@ -106,6 +106,7 @@ public partial class MoonGame : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_multiplayerAuth = GetTree().GetMultiplayer().IsServer()? Player.Server : Player.Client;
 		_rng.Randomize();
 
 		_exitButton = GetNode<Button>("ExitButton");
@@ -116,11 +117,43 @@ public partial class MoonGame : Control
 		foreach(var node in _board._nodes.Values)
 			node.OnBoardNodePressed += OnNodePressed;
 
-		_playerColor = new()
+		Hide();
+		var rpsScene = GD.Load<PackedScene>("res://rps_ui.tscn").Instantiate<RpsUi>();
+		rpsScene.RPSFinished += OnRPSFinished;
+		GetTree().Root.AddChild(rpsScene);
+	}
+
+	private void OnRPSFinished(int rpsWinner)
+	{
+		//start the game
+		InitPlayerColor((Player)rpsWinner);
+
+		if(_multiplayerAuth == Player.Server)
 		{
-			{Player.Server, MoonCard.Color.Bright},
-			{Player.Client, MoonCard.Color.Dark}
-		};
+			for(int i = 0; i < 2; i++)
+			{
+				DrawCardRandomly(Player.Server);
+				DrawCardRandomly(Player.Client);
+			}			
+			DrawCardRandomly((Player)rpsWinner);
+		}
+
+		InitLayout(_multiplayerAuth);
+		if(_multiplayerAuth == Player.Server)
+			Rpc(nameof(SetGameTurn), rpsWinner);
+		Show();
+
+		if(HasNode("/root/RPS_UI"))
+			GetNode("/root/RPS_UI").QueueFree();
+	}
+
+	//setting game object ownership based on rps winner
+	private void InitPlayerColor(Player rpsWinner)
+	{
+		var rpsLoser = (rpsWinner == Player.Server)? Player.Client : Player.Server;
+		_playerColor[rpsWinner] = MoonCard.Color.Bright;
+		_playerColor[rpsLoser] = MoonCard.Color.Dark;
+
 		_score = new()
         {
             { Player.Server, GetNode<PlayerScore>($"{_playerColor[Player.Server]}Score") },
@@ -130,34 +163,7 @@ public partial class MoonGame : Control
 		{
             { Player.Server, GetNode<Hand>($"{_playerColor[Player.Server]}Hand") },
             { Player.Client, GetNode<Hand>($"{_playerColor[Player.Client]}Hand") }
-		};
-
-		MultiplayerAuth = GetTree().GetMultiplayer().IsServer()? Player.Server : Player.Client;
-		if(MultiplayerAuth == Player.Server)
-		{
-			for(int i = 0; i < 2; i++)
-			{
-				DrawCardRandomly(Player.Server);
-				DrawCardRandomly(Player.Client);
-			}			
-			DrawCardRandomly(Player.Client);
-		}
-
-		InitLayout(MultiplayerAuth);
-		SetGameTurn((int)Player.Client);
-	}
-
-	// (Server Only) Draw card randomly to target player hand
-	private void DrawCardRandomly(Player player)
-	{
-		int phase = _rng.RandiRange(0,7);
-		Rpc(nameof(DrawCard), (int)player, phase);
-	}
-
-	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void DrawCard(int player, int phase)
-	{
-		_hand[(Player)player].DrawCard(phase);
+		};		
 	}
 
 	//setting game layout for this player, wheter use bright side or dark side
@@ -178,21 +184,28 @@ public partial class MoonGame : Control
 
 		foreach(var (player, score) in _score)
 		{
-			if(player == front)
-			{
-				score.Position = new Vector2(62, 489);
-			}
-			else
-			{
-				score.Position = new Vector2(1088, 193);
-			}
+			if(player == front) score.Position = new Vector2(62, 489);
+			else score.Position = new Vector2(1088, 193);
 		}
+	}
+
+	// (Server Only) Draw card randomly to target player hand
+	private void DrawCardRandomly(Player player)
+	{
+		int phase = _rng.RandiRange(0,7);
+		Rpc(nameof(DrawCard), (int)player, phase);
+	}
+
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void DrawCard(int player, int phase)
+	{
+		_hand[(Player)player].DrawCard(phase);
 	}
 
 	//wheter this is your turn or opponent turn
 	private bool IsYourTurn()
 	{
-		return MultiplayerAuth == _activePlayer;
+		return _multiplayerAuth == _activePlayer;
 	}
 
 	//return the opposite of current active player
@@ -211,22 +224,21 @@ public partial class MoonGame : Control
 		_activePlayer = (Player)player;
 		if(IsYourTurn())
 		{
-			_hand[MultiplayerAuth].ShowAllCard();
-			_score[MultiplayerAuth]._activeIcon.Show();
+			_hand[_multiplayerAuth].ShowAllCard();
+			_score[_multiplayerAuth]._activeIcon.Show();
 			_board.Disabled(false, true);
 		}
 		else if(_activePlayer == Player.None)
-		{	
+		{
 			//waiting server to finish processing
-			_hand[MultiplayerAuth].ShowAllCard(true);
+			_hand[_multiplayerAuth].ShowAllCard(true);
 			_board.Disabled(true, true);
 		}
 		else
 		{
 			//opponent turn
-			_hand[MultiplayerAuth].ShowAllCard(true);
-			var opponent = (MultiplayerAuth == Player.Server)? Player.Client : Player.Server;
-			_score[opponent]._activeIcon.Show();
+			_hand[_multiplayerAuth].ShowAllCard(true);
+			_score[_activePlayer]._activeIcon.Show();
 			_board.Disabled(true, true);
 		}
 	}

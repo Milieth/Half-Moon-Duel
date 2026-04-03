@@ -5,6 +5,7 @@ using System.Linq;
 
 public partial class Board : Control
 {
+	public const int MaxID = 5;
 	private int _id = 0;
 	public Dictionary<string, BoardNode> _nodes{get;set;} = new();
 	public Dictionary<string, ConnectionLine> _edgeConnection{get;set;} = new();
@@ -12,6 +13,9 @@ public partial class Board : Control
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		ZIndex = -1;
+		MouseFilter = MouseFilterEnum.Ignore;
+
 		foreach(Node child in GetChildren())
 		{
 			if(child is BoardNode node)

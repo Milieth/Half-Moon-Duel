@@ -113,14 +113,26 @@ public partial class MoonGame : Control
 		_exitButton.Pressed += OnExitButtonPressed; 
 		_prompt = GetNode<Label>("Prompt");
 		_prompt.Text = "";
-		_board = GetNode<Board>("Board");
-		foreach(var node in _board._nodes.Values)
-			node.OnBoardNodePressed += OnNodePressed;
+
+		if(_multiplayerAuth == Player.Server)
+		{
+			int boardID = _rng.RandiRange(1, Board.MaxID);
+			Rpc(nameof(InitBoard), boardID);		
+		}
 
 		Hide();
 		var rpsScene = GD.Load<PackedScene>("res://rps_ui.tscn").Instantiate<RpsUi>();
-		rpsScene.RPSFinished += OnRPSFinished;
 		GetTree().Root.AddChild(rpsScene);
+		rpsScene.RPSFinished += OnRPSFinished;
+	}
+
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void InitBoard(int boardID)
+	{
+		_board = GD.Load<PackedScene>($"res://Board{boardID}.tscn").Instantiate<Board>();
+		AddChild(_board);
+		foreach(var node in _board._nodes.Values)
+			node.OnBoardNodePressed += OnNodePressed;		
 	}
 
 	private void OnRPSFinished(int rpsWinner)
@@ -139,7 +151,7 @@ public partial class MoonGame : Control
 		}
 
 		InitLayout(_multiplayerAuth);
-		if(_multiplayerAuth == Player.Server)
+		if(GetTree().GetMultiplayer().IsServer())
 			Rpc(nameof(SetGameTurn), rpsWinner);
 		Show();
 
@@ -224,12 +236,14 @@ public partial class MoonGame : Control
 		_activePlayer = (Player)player;
 		if(IsYourTurn())
 		{
+			// GD.Print($"{_multiplayerAuth}: Set Your Turn");
 			_hand[_multiplayerAuth].ShowAllCard();
 			_score[_multiplayerAuth]._activeIcon.Show();
 			_board.Disabled(false, true);
 		}
 		else if(_activePlayer == Player.None)
 		{
+			// GD.Print($"{_multiplayerAuth}: Set None Turn");
 			//waiting server to finish processing
 			_hand[_multiplayerAuth].ShowAllCard(true);
 			_board.Disabled(true, true);
@@ -237,6 +251,7 @@ public partial class MoonGame : Control
 		else
 		{
 			//opponent turn
+			// GD.Print($"{_multiplayerAuth}: Set Opponent Turn");
 			_hand[_multiplayerAuth].ShowAllCard(true);
 			_score[_activePlayer]._activeIcon.Show();
 			_board.Disabled(true, true);

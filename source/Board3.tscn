@@ -1,0 +1,173 @@
+[gd_scene format=3 uid="uid://dx27rjye6r7bb"]
+
+[ext_resource type="Script" uid="uid://du6yx50f8wrok" path="res://Board.cs" id="1_4gioq"]
+[ext_resource type="PackedScene" uid="uid://bkyhqjrh867wl" path="res://board_node.tscn" id="2_ch5f6"]
+
+[node name="Board" type="Control" unique_id=1642530234]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4gioq")
+
+[node name="A" parent="." unique_id=623789310 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -132.0
+offset_top = -184.0
+offset_right = -78.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("B", "D", "Q")
+
+[node name="B" parent="." unique_id=306520531 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -32.0
+offset_top = -184.0
+offset_right = 22.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("A", "C", "E")
+
+[node name="C" parent="." unique_id=556901887 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 68.0
+offset_top = -184.0
+offset_right = 122.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("B", "F", "M")
+
+[node name="D" parent="." unique_id=1897769128 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -132.0
+offset_top = -84.0
+offset_right = -78.0
+offset_bottom = -30.0
+_adjacent = PackedStringArray("A", "E", "G", "R")
+
+[node name="E" parent="." unique_id=1040998290 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -32.0
+offset_top = -84.0
+offset_right = 22.0
+offset_bottom = -30.0
+_adjacent = PackedStringArray("B", "D", "F", "H")
+
+[node name="F" parent="." unique_id=1537872688 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 68.0
+offset_top = -84.0
+offset_right = 122.0
+offset_bottom = -30.0
+_adjacent = PackedStringArray("C", "E", "I", "N")
+
+[node name="G" parent="." unique_id=644679309 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -132.0
+offset_top = 16.0
+offset_right = -78.0
+offset_bottom = 70.0
+_adjacent = PackedStringArray("D", "H", "S", "J")
+
+[node name="H" parent="." unique_id=666385882 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -32.0
+offset_top = 16.0
+offset_right = 22.0
+offset_bottom = 70.0
+_adjacent = PackedStringArray("E", "G", "I", "K")
+
+[node name="I" parent="." unique_id=343477496 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 68.0
+offset_top = 16.0
+offset_right = 122.0
+offset_bottom = 70.0
+_adjacent = PackedStringArray("F", "H", "O", "L")
+
+[node name="J" parent="." unique_id=461931735 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -132.0
+offset_top = 116.0
+offset_right = -78.0
+offset_bottom = 170.0
+_adjacent = PackedStringArray("T", "G", "K")
+
+[node name="K" parent="." unique_id=1116258364 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -32.0
+offset_top = 116.0
+offset_right = 22.0
+offset_bottom = 170.0
+_adjacent = PackedStringArray("J", "H", "L")
+
+[node name="L" parent="." unique_id=508830549 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 68.0
+offset_top = 116.0
+offset_right = 122.0
+offset_bottom = 170.0
+_adjacent = PackedStringArray("I", "K", "P")
+
+[node name="M" parent="." unique_id=1602239077 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 168.0
+offset_top = -184.0
+offset_right = 222.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("C", "N")
+
+[node name="N" parent="." unique_id=1975404485 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 168.0
+offset_top = -84.0
+offset_right = 222.0
+offset_bottom = -30.0
+_adjacent = PackedStringArray("M", "F", "O")
+
+[node name="O" parent="." unique_id=1200746489 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 168.0
+offset_top = 16.0
+offset_right = 222.0
+offset_bottom = 70.0
+_adjacent = PackedStringArray("N", "I", "P")
+
+[node name="P" parent="." unique_id=326784031 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = 168.0
+offset_top = 116.0
+offset_right = 222.0
+offset_bottom = 170.0
+_adjacent = PackedStringArray("L", "O")
+
+[node name="Q" parent="." unique_id=1160802034 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -232.0
+offset_top = -184.0
+offset_right = -178.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("A", "R")
+
+[node name="R" parent="." unique_id=1423900256 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -232.0
+offset_top = -84.0
+offset_right = -178.0
+offset_bottom = -30.0
+_adjacent = PackedStringArray("Q", "S", "D")
+
+[node name="S" parent="." unique_id=100797646 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -232.0
+offset_top = 16.0
+offset_right = -178.0
+offset_bottom = 70.0
+_adjacent = PackedStringArray("R", "G", "T")
+
+[node name="T" parent="." unique_id=17710302 instance=ExtResource("2_ch5f6")]
+layout_mode = 1
+offset_left = -232.0
+offset_top = 116.0
+offset_right = -178.0
+offset_bottom = 170.0
+_adjacent = PackedStringArray("S", "J")

@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://cpjjhseaakrgb"]
+
+[ext_resource type="Script" uid="uid://du6yx50f8wrok" path="res://Board.cs" id="1_c3veb"]
+[ext_resource type="PackedScene" uid="uid://bkyhqjrh867wl" path="res://board_node.tscn" id="2_e4wxj"]
+
+[node name="Board" type="Control" unique_id=1642530234]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c3veb")
+
+[node name="A" parent="." unique_id=623789310 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = -172.0
+offset_top = -54.0
+offset_right = -118.0
+offset_bottom = 0.0
+_adjacent = PackedStringArray("B", "C")
+
+[node name="B" parent="." unique_id=164986110 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = -280.0
+offset_top = -9.0
+offset_right = -226.0
+offset_bottom = 45.0
+_adjacent = PackedStringArray("A", "C")
+
+[node name="C" parent="." unique_id=751036398 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = -216.0
+offset_top = -184.0
+offset_right = -162.0
+offset_bottom = -130.0
+_adjacent = PackedStringArray("A", "B", "D")
+
+[node name="D" parent="." unique_id=1478980489 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = -28.0
+offset_top = -159.0
+offset_right = 26.0
+offset_bottom = -105.0
+_adjacent = PackedStringArray("C", "E")
+
+[node name="E" parent="." unique_id=1546843190 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = 142.0
+offset_top = -99.0
+offset_right = 196.0
+offset_bottom = -45.0
+_adjacent = PackedStringArray("D", "F")
+
+[node name="F" parent="." unique_id=1483403664 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = 220.0
+offset_top = -9.0
+offset_right = 274.0
+offset_bottom = 45.0
+_adjacent = PackedStringArray("E", "H", "G")
+
+[node name="G" parent="." unique_id=592108089 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = 92.0
+offset_top = 118.0
+offset_right = 146.0
+offset_bottom = 172.0
+_adjacent = PackedStringArray("F", "H")
+
+[node name="H" parent="." unique_id=1532653266 instance=ExtResource("2_e4wxj")]
+layout_mode = 1
+offset_left = 222.0
+offset_top = 109.0
+offset_right = 276.0
+offset_bottom = 163.0
+_adjacent = PackedStringArray("G", "F")

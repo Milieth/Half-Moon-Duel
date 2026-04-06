@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c2dhpsd3k2ux5"]
+
+[ext_resource type="Texture2D" uid="uid://dp8645otfo7h6" path="res://aset/MoonCard_3.webp" id="1_ia1lp"]
+[ext_resource type="Script" uid="uid://dw3go7kfev5kr" path="res://Sprite2dTween.cs" id="2_sasra"]
+[ext_resource type="Texture2D" uid="uid://bbmo15m78qjeo" path="res://aset/white star.png" id="3_sasra"]
+
+[node name="Node" type="Node" unique_id=235027520]
+
+[node name="Sprite2DTween" type="Sprite2D" parent="." unique_id=1346882936]
+texture = ExtResource("1_ia1lp")
+script = ExtResource("2_sasra")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2DTween" unique_id=1611761386]
+visible = false
+position = Vector2(-22, -22)
+texture = ExtResource("3_sasra")

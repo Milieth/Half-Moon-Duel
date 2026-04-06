@@ -37,21 +37,49 @@ public partial class MoonCard : Sprite2D
 		Init();
 	}
 
+	public Tween GetCollectingStarAnim(Vector2 finalPosition)
+	{
+		var star = new Sprite2D();
+		AddChild(star);
+		star.Hide();
+		star.Texture = GD.Load<Texture2D>("res://aset/white star.png");
+		star.Position = new Vector2(-22, -22) * Scale.X;
+
+		var tween = GetTree().CreateTween();
+		tween.TweenCallback(Callable.From(() =>
+		{
+			star.Show();
+		}));		
+		tween.TweenProperty(star, "global_position", finalPosition, 1.0).SetDelay(0.5);
+		tween.TweenCallback(Callable.From(() =>
+		{
+			star.QueueFree();
+		}));
+
+		return tween;
+	}
+
 	// return card size, front icon and back icon have the same size
 	public Vector2 GetSize()
 	{
 		return _frontIcon.Texture.GetSize();
 	}
 
-	// change moon card color
-	public void SetColor(Color colorType)
+	static public Godot.Color GetColor(MoonCard.Color colorType)
 	{
-		_frontIcon.SelfModulate = colorType switch
+		var color = colorType switch
 		{
 			Color.Bright => new Godot.Color(1.0f, 1.0f, 1.0f) * 2.0f,
 			Color.Dark => new Godot.Color(1.0f, 1.0f, 1.0f, 2.0f) * 0.5f,
 			_ => new Godot.Color(1.0f, 1.0f, 1.0f)
 		};
+		return color;
+	}
+
+	// change moon card color
+	public void SetColor(Color colorType)
+	{
+		_frontIcon.SelfModulate = MoonCard.GetColor(colorType);
 		_color = colorType;
 	}
 

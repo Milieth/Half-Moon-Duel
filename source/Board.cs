@@ -57,13 +57,18 @@ public partial class Board : Control
 	//return many cards in board with given color
 	public int CountCardsByColor(MoonCard.Color colorType)
 	{
-		int manyCards = 0;
+		return GetCardByColor(colorType).Count;
+	}
+
+	//search a list of cards with the same color(owner)
+	public List<string> GetCardByColor(MoonCard.Color colorType)
+	{
+		var nodeIDs = new List<string>();
 		foreach(var node in _nodes.Values)
-			if(node._card is not null)
-				if(node._card._color == colorType)
-					manyCards++;
+			if(node._card is not null && node._card._color == colorType)
+					nodeIDs.Add(node._id);
 		
-		return manyCards;
+		return nodeIDs;
 	}
 
 	//setting cards color bright or dark

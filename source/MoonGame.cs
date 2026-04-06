@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using GDArray = Godot.Collections.Array;
+
 public class CardMatchEvent
 {
 	public MoonCard.Pattern _pattern{get;set;}
@@ -10,9 +12,9 @@ public class CardMatchEvent
 	public int _score{get;set;}
 	public Player _owner{get;set;}
 
-	static public Godot.Collections.Array CreateRPCsPackedArr(List<CardMatchEvent> matchEventList)
+	static public GDArray CreateRPCsPackedArr(List<CardMatchEvent> matchEventList)
 	{
-		Godot.Collections.Array matchEventArr = new();
+		GDArray matchEventArr = new();
 		
 		foreach(var matchEvent in matchEventList)
 			matchEventArr.Add(matchEvent.CreateRPCsPacked());
@@ -20,7 +22,7 @@ public class CardMatchEvent
 		return matchEventArr;
 	}
 
-	static public List<CardMatchEvent> UnpackingRPCsPacked(Godot.Collections.Array matchEventArr)
+	static public List<CardMatchEvent> UnpackingRPCsPacked(GDArray matchEventArr)
 	{
 		List<CardMatchEvent> matchEventList = new();
 		foreach(Godot.Collections.Dictionary dict in matchEventArr)
@@ -230,6 +232,9 @@ public partial class MoonGame : Control
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void SetGameTurn(int player)
 	{
+		if((Player)player == Player.None)
+			return;
+
 		foreach(var playerScore in _score.Values)
 			playerScore._activeIcon.Hide();
 
@@ -241,13 +246,6 @@ public partial class MoonGame : Control
 			_score[_multiplayerAuth]._activeIcon.Show();
 			_board.Disabled(false, true);
 		}
-		else if(_activePlayer == Player.None)
-		{
-			// GD.Print($"{_multiplayerAuth}: Set None Turn");
-			//waiting server to finish processing
-			_hand[_multiplayerAuth].ShowAllCard(true);
-			_board.Disabled(true, true);
-		}
 		else
 		{
 			//opponent turn
@@ -256,6 +254,14 @@ public partial class MoonGame : Control
 			_score[_activePlayer]._activeIcon.Show();
 			_board.Disabled(true, true);
 		}
+	}
+
+	//disable any input, until SetGameTurn() called
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void StopInput()
+	{
+		_hand[_multiplayerAuth].ShowAllCard(true);
+		_board.Disabled(true, true);
 	}
 
 	//construct phase pair event from target node, if there are no event occured return null
@@ -280,6 +286,7 @@ public partial class MoonGame : Control
 		return pairEvent;		
 	}
 
+	//construct full phase event from target node, if there are no event occured return null
 	private List<CardMatchEvent> GetFullPhaseEvent(string targetNodeID, Player player)
 	{
 		var fullPhase = _board.GetFullPhaseList(targetNodeID);
@@ -301,6 +308,7 @@ public partial class MoonGame : Control
 		return fullEvent;
 	}
 
+	//construct lunar phase cycle event from target node, if there are no event occured return null
 	private List<CardMatchEvent> GetPhaseSequenceEvent(string targetNodeID, Player player)
 	{
 		var phaseSequence = _board.GetPhaseSequenceList(targetNodeID);
@@ -313,7 +321,7 @@ public partial class MoonGame : Control
 			var matchEvent = new CardMatchEvent(
 				pattern: MoonCard.Pattern.PhaseSequence,
 				nodes: nodes,
-				score: nodes.Count + 7*(nodes.Count / 8),
+				score: nodes.Count,
 				owner: player
 			);
 			sequenceEvent.Add(matchEvent);
@@ -340,20 +348,19 @@ public partial class MoonGame : Control
 		return (allEvents is not null)? allEvents : null;
 	}
 
+	//player pressed board node and request a move
 	private void OnNodePressed(string nodeID)
 	{
 		GD.Print($"Node Pressed:{nodeID}");
+		StopInput();
 		if(!GetTree().GetMultiplayer().IsServer())
-		{
-			SetGameTurn((int)Player.None);
 			RpcId(1, nameof(ValidateMove), nodeID, _hand[Player.Client].GetSelectedButtonIndex(), (int)Player.Client);
-		}
 		else
-		{
 			ValidateMove(nodeID, _hand[Player.Server].GetSelectedButtonIndex(), (int)Player.Server);
-		}
+		
 	}	
 
+	//check if place a card action is possible
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private bool ValidateMove(string nodeID, int cardIndex, int sender)
 	{
@@ -381,24 +388,14 @@ public partial class MoonGame : Control
 		var matchEvent = GetCardEvents(nodeID, (Player)sender);
 		if(matchEvent is not null)
 			Rpc(nameof(ImplementCardEvents), CardMatchEvent.CreateRPCsPackedArr(matchEvent));
-		
-		//next phase
-		if(!_board.IsBoardFull())
-		{
-			DrawCardRandomly(GetNextPlayerTurn());
-			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
-		}
-		else
-		{
-			Rpc(nameof(SetGameTurn), (int)Player.None);
-			GainBonusPoint();
-			DetermineWinner();
-		}
 	}
 
 	//(Server) determine winner of the game and display it
 	private void DetermineWinner()
 	{
+		if(_multiplayerAuth == Player.Client)
+			return;
+
 		var server = _score[Player.Server].Score;
 		var client = _score[Player.Client].Score;
 		Player winner = Player.None;
@@ -444,34 +441,144 @@ public partial class MoonGame : Control
 		_hand[(Player)sender].RemoveButton(cardIndex);
 	}
 
+	//prepare to the next turn or end the game
+	private void EndPhase()
+	{
+		if(_multiplayerAuth == Player.Client)
+			return;
+		
+		if(!_board.IsBoardFull())
+		{
+			DrawCardRandomly(GetNextPlayerTurn());
+			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
+		}
+		else
+		{
+			//end game
+			Rpc(nameof(StopInput));
+			GainBonusPoint();
+		}
+	}
+	
 	//Implement card pattern matching events
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void ImplementCardEvents(Godot.Collections.Array matchEventArr)
+	private void ImplementCardEvents(GDArray matchEventArr)
 	{
+		var tween = GetTree().CreateTween();
 		foreach(var matchEvent in CardMatchEvent.UnpackingRPCsPacked(matchEventArr))
 		{
 			matchEvent.print();
-			_score[matchEvent._owner].IncreaseScore(matchEvent._score);
-			_board.SetCardsColor(matchEvent._nodes, _playerColor[matchEvent._owner]);
+			tween.TweenSubtween(CardMatchEventAnim(matchEvent));	
+
 			_board.SetConnectionLineByEvent(matchEvent);
+			_board.SetCardsColor(matchEvent._nodes, _playerColor[matchEvent._owner]);
 		}
+
+		tween.TweenCallback(new Callable(this, nameof(EndPhase))).SetDelay(1.0);
+	}
+
+	//tweening zoom animation of target cards
+	private Tween ZoomCardAnim(List<string> nodeIDs, Vector2 scale, double duration = 0.5)
+	{
+		var tween = GetTree().CreateTween();
+		tween.SetParallel(true);
+		foreach(var id in nodeIDs)
+		{
+			var card = _board._nodes[id]._card;
+			tween.TweenProperty(card, "scale", scale, duration);
+		}
+
+		return tween;
+	}
+
+	//tweeening set color animation of target cards
+	private Tween RecolorCardAnim(List<string> nodeIDs, MoonCard.Color colorType)
+	{
+		var tween = GetTree().CreateTween();
+		tween.SetParallel(true);
+
+		foreach(var id in nodeIDs)
+		{
+			var card = _board._nodes[id]._card;
+			tween.TweenProperty(card, "modulate", MoonCard.GetColor(colorType), 0.2);
+		}
+
+		return tween;
+	}
+
+	//tweening collecting star animation from card list in board
+	private Tween CollectingStarAnim(List<string> nodeIDs, Player player)
+	{
+		var tween = GetTree().CreateTween();
+		foreach(var id in nodeIDs)
+			tween.TweenSubtween(CardCollectingStarAnim(id, player));
+
+		return tween;
+	}
+
+	//tweening collecting star animation from card in board
+	private Tween CardCollectingStarAnim(string nodeID, Player player)
+	{
+		var tween = GetTree().CreateTween();
+		var card = _board._nodes[nodeID]._card;
+		var scorePos = _score[player].GetStarCenterPos();
+		tween.TweenSubtween(card.GetCollectingStarAnim(scorePos));
+		tween.TweenCallback(Callable.From(() =>
+		{
+			_score[player].IncreaseScore(1);
+		}));
+
+		return tween;
+	}
+
+	// tweening card pattern matching event
+	public Tween CardMatchEventAnim(CardMatchEvent matchEvent)
+	{
+		var playerColor = _playerColor[matchEvent._owner];
+		var tween = GetTree().CreateTween();
+		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.2f, 1.2f)));
+		tween.TweenSubtween(RecolorCardAnim(matchEvent._nodes, playerColor));
+
+		for(int i = 0; i < matchEvent._nodes.Count; i++)
+		{
+			if(!(matchEvent._pattern == MoonCard.Pattern.PhasePair && i == 1))			
+				tween.TweenSubtween(CardCollectingStarAnim(matchEvent._nodes[i], matchEvent._owner));
+		}
+
+		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.0f, 1.0f), 1.0));
+		return tween;
 	}
 
 	//(Server) Player gain bonus point based on many card they claimed at the end of game
 	private void GainBonusPoint()
 	{
-		int serverBonus = _board.CountCardsByColor(_playerColor[Player.Server]);
-		int clientBonus = _board.CountCardsByColor(_playerColor[Player.Client]);
-		Rpc(nameof(ImplementBonusPoint), serverBonus, clientBonus);
+		var serverBonus = _board.GetCardByColor(_playerColor[Player.Server]);
+		var clientBonus = _board.GetCardByColor(_playerColor[Player.Client]);
+		var claimedCards = new Godot.Collections.Dictionary<Player, string>
+		{
+            [Player.Server] = string.Join("", serverBonus),
+            [Player.Client] = string.Join("", clientBonus)
+		};
+
+		Rpc(nameof(ImplementBonusPoint), claimedCards);
 	}
 
-	//increase each player point
+	//increase each player point at bonus poin phase
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void ImplementBonusPoint(int serverBonus, int clientBonus)
+	private void ImplementBonusPoint(Godot.Collections.Dictionary<Player, string> claimedCards)
 	{
-		_score[Player.Server].IncreaseScore(serverBonus);
-		GD.Print($"{Player.Server} Gain Bonus:{serverBonus}");		
-		_score[Player.Client].IncreaseScore(clientBonus);
-		GD.Print($"{Player.Client} Gain Bonus:{clientBonus}");
+		var tween = GetTree().CreateTween();
+		foreach(var (player, nodeStr) in claimedCards)
+		{
+			var nodeIDList = nodeStr.Select(c => c.ToString()).ToList();
+			tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.2f, 1.2f)));
+			tween.TweenSubtween(CollectingStarAnim(nodeIDList, player));			
+			tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.0f, 1.0f), 0.2));
+		}
+
+		tween.TweenCallback(new Callable(this, nameof(DetermineWinner)));
+
+		GD.Print($"{Player.Server} Gain Bonus:{claimedCards[Player.Server].Length}");		
+		GD.Print($"{Player.Client} Gain Bonus:{claimedCards[Player.Client].Length}");
 	}
 }

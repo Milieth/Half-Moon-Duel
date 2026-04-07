@@ -1,1 +1,5 @@
 res://MoonGame.cs
+res://Sprite2dTween.cs
+res://MoonCard.cs
+res://PlayerScore.cs
+res://Hand.cs

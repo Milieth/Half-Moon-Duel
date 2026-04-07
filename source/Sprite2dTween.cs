@@ -3,7 +3,6 @@ using System;
 
 public partial class Sprite2dTween : Sprite2D
 {
-    // private Tween _tween;
     public override void _Ready()
     {
         Position = new Vector2(640, 360);
@@ -15,7 +14,6 @@ public partial class Sprite2dTween : Sprite2D
         tween.Parallel().TweenSubtween(AddStarAnim()).SetDelay(0.4);
         tween.Parallel().TweenSubtween(AddStarAnim()).SetDelay(0.6);
         tween.TweenProperty(this, "scale", new Vector2(1.0f, 1.0f), 1.0);
-        // _tween = tween;
     }
 
     private Tween AddStarAnim()

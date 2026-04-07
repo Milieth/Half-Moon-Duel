@@ -14,3 +14,5 @@ script = ExtResource("2_sasra")
 visible = false
 position = Vector2(-22, -22)
 texture = ExtResource("3_sasra")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1699732133]

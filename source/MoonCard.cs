@@ -37,6 +37,23 @@ public partial class MoonCard : Sprite2D
 		Init();
 	}
 
+	public Tween GetFlipFaceUpAnim()
+	{
+		var tween = GetTree().CreateTween();
+		tween.TweenCallback(new Callable(this, nameof(FlipFaceDown)));
+		tween.TweenProperty(this, "scale:x", 0.0f, 0.15)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.In);
+		
+		tween.TweenCallback(new Callable(this, nameof(FlipFaceUp)));
+
+		tween.TweenProperty(this, "scale:x", 1.0f, 0.15)
+			.SetTrans(Tween.TransitionType.Quad)
+			.SetEase(Tween.EaseType.Out);
+		
+		return tween;
+	}
+
 	public Tween GetCollectingStarAnim(Vector2 finalPosition)
 	{
 		var star = new Sprite2D();
@@ -90,6 +107,12 @@ public partial class MoonCard : Sprite2D
 		_frontIcon.Texture = GD.Load<Texture2D>($"res://aset/MoonCard_{phase}.webp");
 	}
 
+	//check wheter card currently face up or face down
+	public bool IsFaceUp()
+	{
+		return _frontIcon.Visible;
+	}
+
 	//turn moon card to face up, showing moon phase
 	public void FlipFaceUp()
 	{
@@ -115,10 +138,5 @@ public partial class MoonCard : Sprite2D
 		{
 			FlipFaceUp();
 		}
-	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
 	}
 }

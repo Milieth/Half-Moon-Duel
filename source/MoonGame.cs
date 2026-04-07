@@ -370,7 +370,7 @@ public partial class MoonGame : Control
 		bool valid = validCard && nodeIsEmpty && validPlayer;
 		if(valid)
 		{
-			ExecuteMove(nodeID, cardIndex, sender);
+			Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
 		}
 		else
 		{
@@ -380,14 +380,42 @@ public partial class MoonGame : Control
 		return valid;
 	}
 
-	//execute player move and its corresponding event
-	private void ExecuteMove(string nodeID, int cardIndex, int sender)
+	//place card from hand to board, note: card in hand are destroyed in tweening
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void PlaceCard(string nodeID, int cardIndex, int sender)
 	{
-		Rpc(nameof(PlaceCard), nodeID, cardIndex, sender);
+		var cardInHand = _hand[(Player)sender].GetCard(cardIndex);
+		var phase = cardInHand._phase;
 
-		var matchEvent = GetCardEvents(nodeID, (Player)sender);
-		if(matchEvent is not null)
-			Rpc(nameof(ImplementCardEvents), CardMatchEvent.CreateRPCsPackedArr(matchEvent));
+		var cardInBoard = GD.Load<PackedScene>("res://moon_card.tscn").Instantiate<MoonCard>();
+		AddChild(cardInBoard);
+		cardInBoard.Hide();
+		cardInBoard.SetMoonPhase(phase);
+		_board.PlaceCard(nodeID, cardInBoard);
+
+		if(_multiplayerAuth == Player.Server)
+		{
+			var matchEvent = GetCardEvents(nodeID, (Player)sender);
+			if(matchEvent is not null)
+				Rpc(nameof(RunPlaceCardEventAnim), nodeID, cardIndex, sender, CardMatchEvent.CreateRPCsPackedArr(matchEvent));
+		}
+	}
+
+	//tweening place card animation and card matching event animation
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void RunPlaceCardEventAnim(string nodeID, int cardIndex, int sender, GDArray matchEventArr)
+	{
+		var cardInHand = _hand[(Player)sender].GetCard(cardIndex);
+		var tween = GetTree().CreateTween();
+		tween.TweenSubtween(_board.PlaceCardAnim(nodeID, cardInHand));
+		tween.TweenCallback(Callable.From(() =>
+		{
+			_board._nodes[nodeID]._card.Show();
+			_hand[(Player)sender].RemoveButton(cardIndex);
+		}));
+
+		tween.TweenSubtween(ImplementCardEvents(matchEventArr));
+		tween.TweenCallback(new Callable(this, nameof(EndPhase))).SetDelay(0.5);
 	}
 
 	//(Server) determine winner of the game and display it
@@ -431,16 +459,6 @@ public partial class MoonGame : Control
 		EmitSignal("GameFinished", "Game Finished");
 	}
 
-	//move card from player hand to board node
-	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void PlaceCard(string nodeID, int cardIndex, int sender)
-	{
-		var card = _hand[(Player)sender].GetCard(cardIndex);
-		card.FlipFaceUp();
-		_board.PlaceCard(nodeID, card);
-		_hand[(Player)sender].RemoveButton(cardIndex);
-	}
-
 	//prepare to the next turn or end the game
 	private void EndPhase()
 	{
@@ -461,10 +479,10 @@ public partial class MoonGame : Control
 	}
 	
 	//Implement card pattern matching events
-	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void ImplementCardEvents(GDArray matchEventArr)
+	private Tween ImplementCardEvents(GDArray matchEventArr)
 	{
 		var tween = GetTree().CreateTween();
+		tween.TweenInterval(1.0f);
 		foreach(var matchEvent in CardMatchEvent.UnpackingRPCsPacked(matchEventArr))
 		{
 			matchEvent.print();
@@ -474,7 +492,7 @@ public partial class MoonGame : Control
 			_board.SetCardsColor(matchEvent._nodes, _playerColor[matchEvent._owner]);
 		}
 
-		tween.TweenCallback(new Callable(this, nameof(EndPhase))).SetDelay(1.0);
+		return tween;
 	}
 
 	//tweening zoom animation of target cards
@@ -534,6 +552,22 @@ public partial class MoonGame : Control
 	// tweening card pattern matching event
 	public Tween CardMatchEventAnim(CardMatchEvent matchEvent)
 	{
+		foreach (var id in matchEvent._nodes)
+		{
+			var node = _board._nodes.GetValueOrDefault(id);
+			if (node == null)
+			{
+				GD.Print($"Node {id} not found in _board._nodes");
+				continue;
+			}
+			var card = node._card;
+			if (card == null)
+			{
+				GD.Print($"_card is null for node {id}");
+				continue;
+			}
+			// Proceed with animation
+		}
 		var playerColor = _playerColor[matchEvent._owner];
 		var tween = GetTree().CreateTween();
 		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.2f, 1.2f)));

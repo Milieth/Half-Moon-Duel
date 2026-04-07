@@ -126,6 +126,18 @@ public partial class Board : Control
 		return GetPhasePair(targetNodeID, (targetPhase, adjacentPhase) => targetPhase == adjacentPhase);
 	}
 
+	public Tween PlaceCardAnim(string nodeID, MoonCard card)
+	{
+		var nodePos = _nodes[nodeID].GetCenterPosition();
+		
+		var tween = GetTree().CreateTween();
+		tween.TweenProperty(card, "global_position", nodePos, 0.2);
+		if(!card.IsFaceUp())
+			tween.TweenSubtween(card.GetFlipFaceUpAnim());
+
+		return tween;
+	}
+
 	//place moon card in node
 	public void PlaceCard(string nodeID, MoonCard card)
 	{

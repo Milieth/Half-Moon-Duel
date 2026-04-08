@@ -1,5 +1,8 @@
-res://Hand.cs
+res://MoonGame.cs
 res://Sprite2dTween.cs
 res://MoonCard.cs
 res://PlayerScore.cs
-res://MoonGame.cs
+res://Hand.cs
+res://test_scene.tscn
+res://ConnectionLine.cs
+res://connection_line.tscn

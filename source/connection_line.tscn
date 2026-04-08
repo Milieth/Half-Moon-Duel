@@ -11,6 +11,10 @@ width = 5.0
 default_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
 antialiased = true
 
+[node name="LunarConnection" type="Line2D" parent="." unique_id=1648185125]
+width = 5.2
+antialiased = true
+
 [node name="PairIcon" type="Sprite2D" parent="." unique_id=863871043]
 visible = false
 texture = ExtResource("1_d2ce3")

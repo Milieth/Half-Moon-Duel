@@ -3,38 +3,41 @@ using System;
 
 public partial class Sprite2dTween : Sprite2D
 {
+    private Line2D _line2D;
     public override void _Ready()
     {
-        Position = new Vector2(640, 360);
+        var line2D = new Line2D();
+        AddChild(line2D);
+        line2D.Width = 5.0f;
+        _line2D = line2D;
 
-        var tween = GetTree().CreateTween();
-        tween.TweenProperty(this, "scale", new Vector2(2.0f, 2.0f), 1.0f).SetDelay(2.0);
-        tween.TweenProperty(this, "self_modulate", new Color(1.0f, 1.0f, 1.0f) * 2.0f, 1.0f);
-        tween.TweenSubtween(AddStarAnim());
-        tween.Parallel().TweenSubtween(AddStarAnim()).SetDelay(0.4);
-        tween.Parallel().TweenSubtween(AddStarAnim()).SetDelay(0.6);
-        tween.TweenProperty(this, "scale", new Vector2(1.0f, 1.0f), 1.0);
+        var tween = GetTree().CreateTween().SetLoops();
+        tween.TweenSubtween(DrawAnimatedLine(new Vector2(300, 300), new Vector2(600, 600), 0.2f));
+        tween.TweenSubtween(DrawAnimatedLine(new Vector2(600, 600), new Vector2(200, 600), 0.2f));
+        tween.TweenSubtween(DrawAnimatedLine(new Vector2(200, 600), new Vector2(300, 300), 0.2f));
     }
-
-    private Tween AddStarAnim()
+    
+    public Tween DrawAnimatedLine(Vector2 startPos, Vector2 endPos, float duration)
     {
-        var star = new Sprite2D();
-        AddChild(star);
-        star.Texture = GD.Load<Texture2D>("res://aset/white star.png");
-        star.Hide();
+        // 1. Clear previous points and set initial state
 
-        var sub_tween = GetTree().CreateTween();
-        sub_tween.TweenCallback(Callable.From(() =>
+        // 2. Create the Tween
+        Tween tween = GetTree().CreateTween();
+        tween.TweenCallback(Callable.From(() =>
         {
-            star.Show();
-            star.GlobalPosition = GlobalPosition + new Vector2(-22, -22) * Scale.X;
+            _line2D.ClearPoints();
+            _line2D.AddPoint(startPos);
+            _line2D.AddPoint(startPos); // The second point starts at the beginning            
         }));
-        sub_tween.TweenProperty(star, "global_position", new Vector2(50.0f, 650.0f), 2.0);
-        sub_tween.TweenCallback(Callable.From(() =>
-        {
-            star.QueueFree();
-        }));
+        // 3. Animate the second point (index 1) to the end position
+        // We use "SetPointPosition" method via Tween
+        tween.TweenMethod(Callable.From<Vector2>(pos => _line2D.SetPointPosition(1, pos)), 
+                          startPos,
+                          endPos,
+                          duration)
+             .SetTrans(Tween.TransitionType.Cubic)
+             .SetEase(Tween.EaseType.Out);
 
-        return sub_tween;
+        return tween;
     }
 }

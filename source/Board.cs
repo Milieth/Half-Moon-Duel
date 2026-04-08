@@ -78,6 +78,33 @@ public partial class Board : Control
 			_nodes[id]._card.SetColor(color);
 	}
 
+	//reset connection line to only board connection line(grey line)
+	public void ResetConnectionLine(List<string> lineNameList)
+	{
+		foreach(var lineName in lineNameList)
+		{
+			var sortedName = new string(lineName.OrderBy(c => c).ToArray());
+			_edgeConnection[sortedName].SetMatchPattern(MoonCard.Pattern.None);			
+		}		
+	}
+
+	//tweening connection line event based on data in CardMatchEvent
+	public Tween GetConnectionLineEventAnim(CardMatchEvent matchEvent)
+	{
+		var tween = GetTree().CreateTween();
+		tween.TweenCallback(Callable.From(() =>
+		{
+			ResetConnectionLine(ConnectionLine.GetLineNameFromNodes(matchEvent._nodes));
+		}));
+		foreach(var lineName in ConnectionLine.GetLineNameFromNodes(matchEvent._nodes))
+		{
+			var sortedName = new string(lineName.OrderBy(c => c).ToArray());
+			tween.TweenSubtween(_edgeConnection[sortedName].GetConnectionAnim(matchEvent._pattern));
+		}
+
+		return tween;
+	}
+
 	//set connection line type based on occured event
 	public void SetConnectionLineByEvent(CardMatchEvent matchEvent)
 	{
@@ -126,6 +153,7 @@ public partial class Board : Control
 		return GetPhasePair(targetNodeID, (targetPhase, adjacentPhase) => targetPhase == adjacentPhase);
 	}
 
+	//tweening move a card from hand to board, will flip it face up if it currently face down
 	public Tween PlaceCardAnim(string nodeID, MoonCard card)
 	{
 		var nodePos = _nodes[nodeID].GetCenterPosition();

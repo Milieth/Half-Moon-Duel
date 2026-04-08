@@ -488,9 +488,6 @@ public partial class MoonGame : Control
 		{
 			matchEvent.print();
 			tween.TweenSubtween(CardMatchEventAnim(matchEvent));	
-
-			_board.SetConnectionLineByEvent(matchEvent);
-			_board.SetCardsColor(matchEvent._nodes, _playerColor[matchEvent._owner]);
 		}
 
 		return tween;
@@ -520,6 +517,7 @@ public partial class MoonGame : Control
 		{
 			var card = _board._nodes[id]._card;
 			tween.TweenProperty(card, "modulate", MoonCard.GetColor(colorType), 0.2);
+			card._color = colorType;
 		}
 
 		return tween;
@@ -541,7 +539,7 @@ public partial class MoonGame : Control
 		var tween = GetTree().CreateTween();
 		var card = _board._nodes[nodeID]._card;
 		var scorePos = _score[player].GetStarCenterPos();
-		tween.TweenSubtween(card.GetCollectingStarAnim(scorePos));
+		tween.TweenSubtween(card.GetCollectingStarAnim(scorePos, _playerColor[player]));
 		tween.TweenCallback(Callable.From(() =>
 		{
 			_score[player].IncreaseScore(1);
@@ -553,34 +551,19 @@ public partial class MoonGame : Control
 	// tweening card pattern matching event
 	public Tween CardMatchEventAnim(CardMatchEvent matchEvent)
 	{
-		foreach (var id in matchEvent._nodes)
-		{
-			var node = _board._nodes.GetValueOrDefault(id);
-			if (node == null)
-			{
-				GD.Print($"Node {id} not found in _board._nodes");
-				continue;
-			}
-			var card = node._card;
-			if (card == null)
-			{
-				GD.Print($"_card is null for node {id}");
-				continue;
-			}
-			// Proceed with animation
-		}
 		var playerColor = _playerColor[matchEvent._owner];
+
 		var tween = GetTree().CreateTween();
 		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.2f, 1.2f)));
 		tween.TweenSubtween(RecolorCardAnim(matchEvent._nodes, playerColor));
-
+		tween.TweenSubtween(_board.GetConnectionLineEventAnim(matchEvent));
 		for(int i = 0; i < matchEvent._nodes.Count; i++)
 		{
 			if(!(matchEvent._pattern == MoonCard.Pattern.PhasePair && i == 1))			
 				tween.TweenSubtween(CardCollectingStarAnim(matchEvent._nodes[i], matchEvent._owner));
 		}
-
 		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.0f, 1.0f), 1.0));
+
 		return tween;
 	}
 
@@ -606,9 +589,12 @@ public partial class MoonGame : Control
 		foreach(var (player, nodeStr) in claimedCards)
 		{
 			var nodeIDList = nodeStr.Select(c => c.ToString()).ToList();
-			tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.2f, 1.2f)));
-			tween.TweenSubtween(CollectingStarAnim(nodeIDList, player));			
-			tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.0f, 1.0f), 0.2));
+			if(nodeIDList.Count != 0)
+			{
+				tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.2f, 1.2f)));
+				tween.TweenSubtween(CollectingStarAnim(nodeIDList, player));			
+				tween.TweenSubtween(ZoomCardAnim(nodeIDList, new Vector2(1.0f, 1.0f), 0.2));
+			}
 		}
 
 		tween.TweenCallback(new Callable(this, nameof(DetermineWinner)));

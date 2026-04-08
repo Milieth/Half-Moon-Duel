@@ -23,7 +23,7 @@ public partial class MoonCard : Sprite2D
 	private Sprite2D _backIcon;
 	public int _phase{get;private set;} = 0;
 	[Export]
-	public Color _color{get;private set;} = Color.None;
+	public Color _color{get;set;} = Color.None;
 
 	public void Init()
 	{
@@ -37,6 +37,7 @@ public partial class MoonCard : Sprite2D
 		Init();
 	}
 
+	//tweening flip card face up, assume the card is in face down
 	public Tween GetFlipFaceUpAnim()
 	{
 		var tween = GetTree().CreateTween();
@@ -54,12 +55,14 @@ public partial class MoonCard : Sprite2D
 		return tween;
 	}
 
-	public Tween GetCollectingStarAnim(Vector2 finalPosition)
+	//tweening collecting star animation, display star in card, move it to target position then disappear
+	public Tween GetCollectingStarAnim(Vector2 finalPosition, Color color)
 	{
+		string starColor = (color == Color.Bright)? "white" : "black";
 		var star = new Sprite2D();
 		AddChild(star);
 		star.Hide();
-		star.Texture = GD.Load<Texture2D>("res://aset/white star.png");
+		star.Texture = GD.Load<Texture2D>($"res://aset/{starColor} star.png");
 		star.Position = new Vector2(-22, -22) * Scale.X;
 
 		var tween = GetTree().CreateTween();
@@ -67,7 +70,7 @@ public partial class MoonCard : Sprite2D
 		{
 			star.Show();
 		}));		
-		tween.TweenProperty(star, "global_position", finalPosition, 1.0).SetDelay(0.5);
+		tween.TweenProperty(star, "global_position", finalPosition, 0.2).SetDelay(0.3);
 		tween.TweenCallback(Callable.From(() =>
 		{
 			star.QueueFree();
@@ -82,6 +85,7 @@ public partial class MoonCard : Sprite2D
 		return _frontIcon.Texture.GetSize();
 	}
 
+	//return default colortype, change this to tweak card color setting
 	static public Godot.Color GetColor(MoonCard.Color colorType)
 	{
 		var color = colorType switch

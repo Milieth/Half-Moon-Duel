@@ -141,18 +141,18 @@ public partial class MoonGame : Control
 	{
 		//start the game
 		InitPlayerColor((Player)rpsWinner);
+		InitLayout(_multiplayerAuth);
 
 		if(_multiplayerAuth == Player.Server)
 		{
 			for(int i = 0; i < 2; i++)
 			{
-				DrawCardRandomly(Player.Server);
-				DrawCardRandomly(Player.Client);
+				DrawCardRandomly(Player.Server, true);
+				DrawCardRandomly(Player.Client, true);
 			}			
-			DrawCardRandomly((Player)rpsWinner);
+			DrawCardRandomly((Player)rpsWinner, true);
 		}
 
-		InitLayout(_multiplayerAuth);
 		if(GetTree().GetMultiplayer().IsServer())
 			Rpc(nameof(SetGameTurn), rpsWinner);
 		Show();
@@ -204,16 +204,16 @@ public partial class MoonGame : Control
 	}
 
 	// (Server Only) Draw card randomly to target player hand
-	private void DrawCardRandomly(Player player)
+	private void DrawCardRandomly(Player player, bool withAnim)
 	{
 		int phase = _rng.RandiRange(0,7);
-		Rpc(nameof(DrawCard), (int)player, phase);
+		Rpc(nameof(DrawCard), (int)player, phase, withAnim);
 	}
 
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void DrawCard(int player, int phase)
+	private void DrawCard(int player, int phase, bool withAnim)
 	{
-		_hand[(Player)player].DrawCard(phase);
+		_hand[(Player)player].DrawCard(phase, withAnim);
 	}
 
 	//wheter this is your turn or opponent turn
@@ -415,7 +415,8 @@ public partial class MoonGame : Control
 		}));
 
 		tween.TweenSubtween(ImplementCardEvents(matchEventArr));
-		tween.TweenCallback(new Callable(this, nameof(EndPhase))).SetDelay(0.5);
+		if(_multiplayerAuth == Player.Server)
+			tween.TweenCallback(new Callable(this, nameof(EndPhase))).SetDelay(0.5); //prevent server to finish early
 	}
 
 	//(Server) determine winner of the game and display it
@@ -467,7 +468,7 @@ public partial class MoonGame : Control
 		
 		if(!_board.IsBoardFull())
 		{
-			DrawCardRandomly(GetNextPlayerTurn());
+			DrawCardRandomly(GetNextPlayerTurn(), true);
 			Rpc(nameof(SetGameTurn), (int)GetNextPlayerTurn());
 		}
 		else

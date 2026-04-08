@@ -14,6 +14,7 @@ public partial class Hand : HBoxContainer
 	private ReferenceRect _selectedBorder;
 	private RandomNumberGenerator _rng= new();
 	private RevealMode _revealMode = RevealMode.FaceUp;
+	private const int DrawStartPosOffset = 300;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -125,7 +126,7 @@ public partial class Hand : HBoxContainer
 	}
 	
 	//Draw moon card and add it to player hand
-	public void DrawCard(int phase)
+	public void DrawCard(int phase, bool withAnim = false)
 	{
 		var packed = GD.Load<PackedScene>("res://moon_card.tscn");
 		var card = packed.Instantiate<MoonCard>();
@@ -135,18 +136,47 @@ public partial class Hand : HBoxContainer
 
 		card.SetMoonPhase(phase);
 		card.Name = "MoonCard";
+		card.FlipFaceDown();
 
 		cardButton.ToggleMode = true;
 		cardButton.CustomMinimumSize = card.GetSize();
 		cardButton.Pressed += OnButtonPressed;
 		cardButton.ButtonGroup = _cardButtonGroup;
 		if(_revealMode == RevealMode.FaceDown)
+			cardButton.Disabled = true;
+		
+		card.Position = new Vector2(cardButton.CustomMinimumSize.X/2, cardButton.CustomMinimumSize.Y/2);
+
+		if(withAnim)
+		{
+			cardButton.Modulate = new Color(1.0f, 1.0f, 1.0f, 0);
+			DrawCardAnim(cardButton);		
+		}
+	}
+
+	//move card from right to ledt and flip it faceup
+	private void DrawCardAnim(Button cardButton)
+	{
+		//calculate the last added button position manually, assume alligment is Center
+		var manyChild = _cardButtonGroup.GetButtons().Count;		//assume all button is visible
+		var manyGap = manyChild - 1;
+		var gapWidth = GetThemeConstant("separation");
+		var childSize = cardButton.CustomMinimumSize;		//assume all button have the same size
+		var finalPosX = childSize.X * (manyChild - 1) + gapWidth * manyGap;
+
+		var card = cardButton.GetNode<MoonCard>("MoonCard");
+		var tween = GetTree().CreateTween();
+		tween.TweenCallback(Callable.From(() =>
 		{
 			card.FlipFaceDown();
-			cardButton.Disabled = true;
+			cardButton.Modulate = new Color(1.0f, 1.0f, 1.0f, 1);
+			cardButton.Position = new Vector2(finalPosX + DrawStartPosOffset, 0);
+		}));
+		tween.TweenProperty(cardButton, "position", new Vector2(finalPosX, 0), 0.4);
+		if(_revealMode == RevealMode.FaceUp)
+		{
+			tween.TweenSubtween(card.GetFlipFaceUpAnim());
 		}
-
-		card.Position = new Vector2(cardButton.CustomMinimumSize.X/2, cardButton.CustomMinimumSize.Y/2);
 	}
 
 	public void OnButtonPressed()

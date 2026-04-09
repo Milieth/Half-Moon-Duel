@@ -98,8 +98,15 @@ public partial class Board : Control
 		}));
 		foreach(var lineName in ConnectionLine.GetLineNameFromNodes(matchEvent._nodes))
 		{
-			var sortedName = new string(lineName.OrderBy(c => c).ToArray());
-			tween.TweenSubtween(_edgeConnection[sortedName].GetConnectionAnim(matchEvent._pattern));
+			if(_edgeConnection.TryGetValue(lineName, out var connectionLine))
+			{
+				tween.TweenSubtween(connectionLine.GetConnectionAnim(matchEvent._pattern));
+			}
+			else
+			{
+				var sortedName = new string(lineName.OrderBy(c => c).ToArray());
+				tween.TweenSubtween(_edgeConnection[sortedName].GetConnectionAnim(matchEvent._pattern, reversedDirection:true));
+			}
 		}
 
 		return tween;
@@ -302,7 +309,9 @@ public partial class Board : Control
 		_edgeConnection[sorted] = edge;
 
 		edge.ZIndex = -1;
-		edge.ConnectEdge(node1.GetCenterPosition(), node2.GetCenterPosition());
+		var id1 = sorted[0].ToString();
+		var id2 = sorted[1].ToString();
+		edge.ConnectEdge(_nodes[id1].GetCenterPosition(), _nodes[id2].GetCenterPosition());
 		edge.SetMatchPattern(MoonCard.Pattern.None);
 	}
 }

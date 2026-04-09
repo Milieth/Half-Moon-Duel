@@ -241,7 +241,6 @@ public partial class MoonGame : Control
 		_activePlayer = (Player)player;
 		if(IsYourTurn())
 		{
-			// GD.Print($"{_multiplayerAuth}: Set Your Turn");
 			_hand[_multiplayerAuth].ShowAllCard();
 			_score[_multiplayerAuth]._activeIcon.Show();
 			_board.Disabled(false, true);
@@ -249,7 +248,6 @@ public partial class MoonGame : Control
 		else
 		{
 			//opponent turn
-			// GD.Print($"{_multiplayerAuth}: Set Opponent Turn");
 			_hand[_multiplayerAuth].ShowAllCard(true);
 			_score[_activePlayer]._activeIcon.Show();
 			_board.Disabled(true, true);

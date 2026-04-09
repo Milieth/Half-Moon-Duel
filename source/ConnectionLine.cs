@@ -68,7 +68,7 @@ public partial class ConnectionLine : Node2D
 	}
 
 	//tweening when change connection line type by specified Mooncard pattern between node
-	public Tween GetConnectionAnim(MoonCard.Pattern pattern)
+	public Tween GetConnectionAnim(MoonCard.Pattern pattern, bool reversedDirection = false)
 	{
 		var tween = GetTree().CreateTween();
 
@@ -98,22 +98,24 @@ public partial class ConnectionLine : Node2D
 					_pairIcon.Show();
 					_pairIcon.Texture = GD.Load<Texture2D>("res://aset/white dot.png");
 					_pairIcon.Modulate = new Color(1.0f, 1.0f, 1.0f, 0);
-					_lunarConnection.ClearPoints();					
+					_lunarConnection.ClearPoints();
 				}));
 				tween.TweenProperty(_pairIcon, "modulate", new Color(1.0f, 1.0f, 1.0f, 1), 0.2);
 				break;
 			case MoonCard.Pattern.PhaseSequence:
+				var startPos = reversedDirection? _edge.Points[1]:_edge.Points[0];
+				var endPos = reversedDirection? _edge.Points[0]:_edge.Points[1];
 				tween.TweenCallback(Callable.From(() =>
 				{
 					_pairIcon.Hide();
 					_lunarConnection.ClearPoints();
-					_lunarConnection.AddPoint(_edge.Points[0]);
-					_lunarConnection.AddPoint(_edge.Points[0]);
+					_lunarConnection.AddPoint(startPos);
+					_lunarConnection.AddPoint(startPos);
 				}));
 		        tween.TweenMethod(Callable.From<Vector2>(pos => _lunarConnection.SetPointPosition(1, pos)),
-                          _edge.Points[0],
-                          _edge.Points[1],
-                          0.4);
+                          startPos,
+                          endPos,
+                          1.0);
 				break;
 			default:
 				break;

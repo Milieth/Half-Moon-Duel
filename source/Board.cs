@@ -92,10 +92,6 @@ public partial class Board : Control
 	public Tween GetConnectionLineEventAnim(CardMatchEvent matchEvent)
 	{
 		var tween = GetTree().CreateTween();
-		tween.TweenCallback(Callable.From(() =>
-		{
-			ResetConnectionLine(ConnectionLine.GetLineNameFromNodes(matchEvent._nodes));
-		}));
 		foreach(var lineName in ConnectionLine.GetLineNameFromNodes(matchEvent._nodes))
 		{
 			if(_edgeConnection.TryGetValue(lineName, out var connectionLine))

@@ -1,10 +1,8 @@
+res://MoonGame.cs
+res://BoardNode.cs
+res://Board.cs
 res://ConnectionLine.cs
 res://Sprite2dTween.cs
 res://MoonCard.cs
 res://PlayerScore.cs
 res://Hand.cs
-res://MoonGame.cs
-res://Board.cs
-res://BoardNode.cs
-res://moon_game.tscn
-res://player_score.tscn

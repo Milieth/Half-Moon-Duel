@@ -62,15 +62,31 @@ public partial class MoonCard : Sprite2D
 		var star = new Sprite2D();
 		AddChild(star);
 		star.Hide();
+		star.ZIndex = 3;
 		star.Texture = GD.Load<Texture2D>($"res://aset/{starColor} star.png");
 		star.Position = new Vector2(-22, -22) * Scale.X;
 
+		bool moveToRight = finalPosition > star.GlobalPosition;
+		var hMove = new Vector2(100, 0);
+		var hMoveOpposite = new Vector2(-50, 0);
+		if(!moveToRight)
+			hMove = -hMove;
+			hMoveOpposite = -hMoveOpposite;
+		
+		var starPos1 = star.Position + hMove;
+		var starPos2 = starPos1 + hMoveOpposite;
+		
 		var tween = GetTree().CreateTween();
 		tween.TweenCallback(Callable.From(() =>
 		{
 			star.Show();
-		}));		
-		tween.TweenProperty(star, "global_position", finalPosition, 0.2).SetDelay(0.3);
+		}));
+		tween.TweenProperty(star, "position", starPos1, 0.2);
+		tween.TweenProperty(star, "position", starPos2, 0.1);
+		tween.TweenProperty(star, "global_position", finalPosition, 0.5)
+			.SetDelay(0.3)
+			.SetTrans(Tween.TransitionType.Back)
+			.SetEase(Tween.EaseType.In);
 		tween.TweenCallback(Callable.From(() =>
 		{
 			star.QueueFree();

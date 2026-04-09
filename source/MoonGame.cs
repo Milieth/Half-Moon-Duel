@@ -521,23 +521,45 @@ public partial class MoonGame : Control
 		return tween;
 	}
 
+	//reset card color to original color, neither bright nor dark. and reset connection between nodes
+	private Tween ResetColorAndConnection(List<string> nodeIDs)
+	{
+		var tween = GetTree().CreateTween();
+		tween.SetParallel(true);
+		tween.TweenCallback(Callable.From(() =>
+		{
+			_board.ResetConnectionLine(ConnectionLine.GetLineNameFromNodes(nodeIDs));
+		}));
+		foreach(var id in nodeIDs)
+		{
+			var card = _board._nodes[id]._card;
+			tween.TweenCallback(Callable.From(() =>
+			{
+				card.Modulate = MoonCard.GetColor(MoonCard.Color.None);		//doesn't change actual color type
+			}));
+		}
+
+		return tween;
+	}
+
 	//tweening collecting star animation from card list in board
-	private Tween CollectingStarAnim(List<string> nodeIDs, Player player)
+	private Tween CollectingStarAnim(List<string> nodeIDs, Player player, double delay = 0.7)
 	{
 		var tween = GetTree().CreateTween();
 		foreach(var id in nodeIDs)
-			tween.TweenSubtween(CardCollectingStarAnim(id, player));
+			tween.TweenSubtween(CardCollectingStarAnim(id, player, delay));
 
 		return tween;
 	}
 
 	//tweening collecting star animation from card in board
-	private Tween CardCollectingStarAnim(string nodeID, Player player)
+	private Tween CardCollectingStarAnim(string nodeID, Player player, double delay = 0.7)
 	{
 		var tween = GetTree().CreateTween();
 		var card = _board._nodes[nodeID]._card;
 		var scorePos = _score[player].GetStarCenterPos();
-		tween.TweenSubtween(card.GetCollectingStarAnim(scorePos, _playerColor[player]));
+		tween.TweenCallback(Callable.From(()=>{card.GetCollectingStarAnim(scorePos, _playerColor[player]);}))
+			.SetDelay(delay);
 		tween.TweenCallback(Callable.From(() =>
 		{
 			_score[player].IncreaseScore(1);
@@ -552,6 +574,7 @@ public partial class MoonGame : Control
 		var playerColor = _playerColor[matchEvent._owner];
 
 		var tween = GetTree().CreateTween();
+		tween.TweenSubtween(ResetColorAndConnection(matchEvent._nodes));
 		tween.TweenSubtween(ZoomCardAnim(matchEvent._nodes, new Vector2(1.2f, 1.2f)));
 		tween.TweenSubtween(RecolorCardAnim(matchEvent._nodes, playerColor));
 		tween.TweenSubtween(_board.GetConnectionLineEventAnim(matchEvent));

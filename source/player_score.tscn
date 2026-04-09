@@ -26,11 +26,11 @@ expand_mode = 2
 [node name="Label" type="Label" parent="." unique_id=72176264]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = ": 10"
+text = ": 100"
 horizontal_alignment = 1
 vertical_alignment = 2
 
 [node name="ActiveIcon" type="Polygon2D" parent="." unique_id=1368711449]
-position = Vector2(5, 0)
+position = Vector2(78, 20)
 antialiased = true
-polygon = PackedVector2Array(67, 21, 75, 16, 75, 26)
+polygon = PackedVector2Array(-6, 0, 4, -5, 4, 5)

@@ -115,7 +115,7 @@ public partial class ConnectionLine : Node2D
 		        tween.TweenMethod(Callable.From<Vector2>(pos => _lunarConnection.SetPointPosition(1, pos)),
                           startPos,
                           endPos,
-                          1.0);
+                          0.4);
 				break;
 			default:
 				break;

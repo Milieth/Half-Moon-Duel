@@ -15,7 +15,25 @@ public partial class PlayerScore : HBoxContainer
 		_star = GetNode<TextureRect>("Star");
 		_activeIcon = GetNode<Polygon2D>("ActiveIcon");
 
+		_activeIcon.VisibilityChanged += OnActiveIconVisibilityChanged;
+
 		UpdateLabel();
+
+		OnActiveIconVisibilityChanged();
+	}
+
+	//play shrink animation when active icon showed to scene
+	private void OnActiveIconVisibilityChanged()
+	{
+		if(_activeIcon.Visible)
+		{
+			var tween = GetTree().CreateTween().SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+			tween.TweenCallback(Callable.From(() =>
+			{
+				_activeIcon.Scale = new Vector2(2.0f, 2.0f);
+			}));
+			tween.TweenProperty(_activeIcon, "scale", new Vector2(1.0f, 1.0f), 0.5);			
+		}
 	}
 
 	public Vector2 GetStarCenterPos()

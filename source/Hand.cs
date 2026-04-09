@@ -130,7 +130,7 @@ public partial class Hand : HBoxContainer
 	{
 		var packed = GD.Load<PackedScene>("res://moon_card.tscn");
 		var card = packed.Instantiate<MoonCard>();
-		var cardButton = new Button();
+		var cardButton = new TextureButton();
 		cardButton.AddChild(card);
 		AddChild(cardButton);
 
@@ -155,7 +155,7 @@ public partial class Hand : HBoxContainer
 	}
 
 	//move card from right to ledt and flip it faceup
-	private void DrawCardAnim(Button cardButton)
+	private void DrawCardAnim(TextureButton cardButton)
 	{
 		//calculate the last added button position manually, assume alligment is Center
 		var manyChild = _cardButtonGroup.GetButtons().Count;		//assume all button is visible

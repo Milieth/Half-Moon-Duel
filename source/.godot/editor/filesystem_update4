@@ -6,3 +6,5 @@ res://Hand.cs
 res://MoonGame.cs
 res://Board.cs
 res://BoardNode.cs
+res://moon_game.tscn
+res://player_score.tscn

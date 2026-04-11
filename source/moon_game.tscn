@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://1j70kqdmil32" path="res://hand.tscn" id="2_ehahf"]
 [ext_resource type="PackedScene" uid="uid://cxabyacn2uqgw" path="res://player_score.tscn" id="4_vnm5s"]
 [ext_resource type="Texture2D" uid="uid://ddohn4jybt8nj" path="res://aset/background.png" id="4_wr4hi"]
+[ext_resource type="AudioStream" uid="uid://oxb5023enybf" path="res://aset/audio/drawDeck2.mp3" id="5_wr4hi"]
 
 [node name="MoonGame" type="Control" unique_id=718595583]
 layout_mode = 3
@@ -71,3 +72,8 @@ text = "Exit The Game"
 z_index = -2
 position = Vector2(640, 360)
 texture = ExtResource("4_wr4hi")
+
+[node name="FirstDraw" type="AudioStreamPlayer" parent="." unique_id=1962945314]
+stream = ExtResource("5_wr4hi")
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1649547424]

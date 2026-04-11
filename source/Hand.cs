@@ -15,10 +15,14 @@ public partial class Hand : HBoxContainer
 	private RandomNumberGenerator _rng= new();
 	private RevealMode _revealMode = RevealMode.FaceUp;
 	private const int DrawStartPosOffset = 300;
+	private AudioStreamPlayer _selectCard;
+	
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_selectCard = GetNode<AudioStreamPlayer>("SelectCard");
+
 		_cardButtonGroup.AllowUnpress = true;
 		_selectedBorder = GetNode<ReferenceRect>("SelectedBorder");
 
@@ -108,6 +112,7 @@ public partial class Hand : HBoxContainer
 		var button = _cardButtonGroup.GetPressedButton();
 		if(button is not null)
 		{
+			_selectCard.Play();
 			_selectedBorder.Size = button.Size;
 			_selectedBorder.Reparent(button, keepGlobalTransform: false);
 			_selectedBorder.Show();

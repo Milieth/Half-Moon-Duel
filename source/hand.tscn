@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://1j70kqdmil32"]
 
 [ext_resource type="Script" uid="uid://bpp7yuoncaydj" path="res://Hand.cs" id="1_wymn8"]
+[ext_resource type="AudioStream" uid="uid://jcn4tjtql7du" path="res://aset/audio/flipCard1.mp3" id="2_bfasp"]
 
 [node name="Hand" type="HBoxContainer" unique_id=938261323]
 anchors_preset = 8
@@ -21,3 +22,6 @@ mouse_filter = 2
 border_color = Color(1, 1, 0, 1)
 border_width = 2.0
 editor_only = false
+
+[node name="SelectCard" type="AudioStreamPlayer" parent="." unique_id=266821297]
+stream = ExtResource("2_bfasp")

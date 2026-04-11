@@ -24,9 +24,11 @@ public partial class MoonCard : Sprite2D
 	public int _phase{get;private set;} = 0;
 	[Export]
 	public Color _color{get;set;} = Color.None;
+	private AudioStreamPlayer _collectingStarSFX;
 
 	public void Init()
 	{
+		_collectingStarSFX = GetNode<AudioStreamPlayer>("CollectingStar");
 		_frontIcon = GetNode<Sprite2D>("FrontIcon");
 		_backIcon = GetNode<Sprite2D>("BackIcon");		
 	}
@@ -45,7 +47,7 @@ public partial class MoonCard : Sprite2D
 		tween.TweenProperty(this, "scale:x", 0.0f, 0.15)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.In);
-		
+
 		tween.TweenCallback(new Callable(this, nameof(FlipFaceUp)));
 
 		tween.TweenProperty(this, "scale:x", 1.0f, 0.15)
@@ -77,20 +79,15 @@ public partial class MoonCard : Sprite2D
 		var starPos2 = starPos1 + hMoveOpposite;
 		
 		var tween = GetTree().CreateTween();
-		tween.TweenCallback(Callable.From(() =>
-		{
-			star.Show();
-		}));
+		tween.TweenCallback(Callable.From(star.Show));
 		tween.TweenProperty(star, "position", starPos1, 0.2);
 		tween.TweenProperty(star, "position", starPos2, 0.1);
+		tween.TweenCallback(Callable.From(() =>{_collectingStarSFX.Play();}));
 		tween.TweenProperty(star, "global_position", finalPosition, 0.5)
 			.SetDelay(0.3)
 			.SetTrans(Tween.TransitionType.Back)
 			.SetEase(Tween.EaseType.In);
-		tween.TweenCallback(Callable.From(() =>
-		{
-			star.QueueFree();
-		}));
+		tween.TweenCallback(Callable.From(star.QueueFree));
 
 		return tween;
 	}

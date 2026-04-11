@@ -9,10 +9,15 @@ public partial class Board : Control
 	private int _id = 0;
 	public Dictionary<string, BoardNode> _nodes{get;set;} = new();
 	public Dictionary<string, ConnectionLine> _edgeConnection{get;set;} = new();
+	private AudioStreamPlayer _placeCardSFX;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		_placeCardSFX = new AudioStreamPlayer();
+		AddChild(_placeCardSFX);
+		_placeCardSFX.Stream = GD.Load<AudioStream>("res://aset/audio/cardPlaced.mp3");
+
 		ZIndex = -1;
 		MouseFilter = MouseFilterEnum.Ignore;
 
@@ -165,6 +170,10 @@ public partial class Board : Control
 		tween.TweenProperty(card, "global_position", nodePos, 0.2);
 		if(!card.IsFaceUp())
 			tween.TweenSubtween(card.GetFlipFaceUpAnim());
+		tween.TweenCallback(Callable.From(() =>
+		{
+			_placeCardSFX.Play();
+		}));
 
 		return tween;
 	}

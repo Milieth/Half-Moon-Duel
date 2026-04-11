@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Half Moon Duel")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a1b9d15e96d5f2b2c9b16e19264bc3bf1f65a9f7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e4fab1502fad95e3495cf2c5e35340b99c8b917")]
 [assembly: System.Reflection.AssemblyProductAttribute("Half Moon Duel")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Half Moon Duel")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

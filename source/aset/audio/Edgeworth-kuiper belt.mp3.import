@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dsm73sn21j0gw"
+path="res://.godot/imported/Edgeworth-kuiper belt.mp3-bc4badd0a3d88aae7ae3b2f9e6a8d28f.mp3str"
+
+[deps]
+
+source_file="res://aset/audio/Edgeworth-kuiper belt.mp3"
+dest_files=["res://.godot/imported/Edgeworth-kuiper belt.mp3-bc4badd0a3d88aae7ae3b2f9e6a8d28f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

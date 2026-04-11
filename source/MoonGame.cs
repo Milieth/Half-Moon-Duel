@@ -104,6 +104,9 @@ public partial class MoonGame : Control
 	private Button _exitButton;
 
 	private RandomNumberGenerator _rng= new();
+	private AudioStreamPlayer _firstDraw;
+	private AudioStreamPlayer _bgm;
+
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -116,8 +119,22 @@ public partial class MoonGame : Control
 		_prompt = GetNode<Label>("Prompt");
 		_prompt.Text = "";
 
+		_firstDraw = GetNode<AudioStreamPlayer>("FirstDraw");
+		_bgm = GetNode<AudioStreamPlayer>("BGM");
+		var bgmFiles = new List<string>
+		{
+			"res://aset/audio/Edgeworth-kuiper belt.mp3",
+			"res://aset/audio/Fearsome_dark_space.mp3",
+			"res://aset/audio/moon walk.mp3"
+		};
+		_bgm.Stream = GD.Load<AudioStream>(bgmFiles[_rng.RandiRange(0, bgmFiles.Count-1)]);
+		if (_bgm.Stream is AudioStreamMP3 mp3Stream)
+			mp3Stream.Loop = true;
+		
+
 		if(_multiplayerAuth == Player.Server)
 		{
+			// AudioServer.SetBusMute(0, true);
 			int boardID = _rng.RandiRange(1, Board.MaxID);
 			Rpc(nameof(InitBoard), boardID);		
 		}
@@ -143,6 +160,7 @@ public partial class MoonGame : Control
 		InitPlayerColor((Player)rpsWinner);
 		InitLayout(_multiplayerAuth);
 
+		_firstDraw.Play();
 		if(_multiplayerAuth == Player.Server)
 		{
 			for(int i = 0; i < 2; i++)
@@ -159,6 +177,8 @@ public partial class MoonGame : Control
 
 		if(HasNode("/root/RPS_UI"))
 			GetNode("/root/RPS_UI").QueueFree();
+
+		_bgm.Play();
 	}
 
 	//setting game object ownership based on rps winner

@@ -1,25 +1,25 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1775718782
+::res://::1775898100
 Board1.tscn::PackedScene::5967546390662464402::1775209305::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 Board2.tscn::PackedScene::5897077263987765394::1775209106::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 Board3.tscn::PackedScene::8831317466387902619::1775217020::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 Board4.tscn::PackedScene::5313417009891335801::1775217769::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
 Board5.tscn::PackedScene::5844813326835391457::1775218478::0::1::::<><><>0<>0<><>::uid://du6yx50f8wrok::::res://Board.cs<>uid://bkyhqjrh867wl::::res://board_node.tscn
-Board.cs::CSharpScript::8628534529894787402::1775720550::0::1::::<>Control<><>0<>0<><>::
+Board.cs::CSharpScript::8628534529894787402::1775892773::0::1::::<>Control<><>0<>0<><>::
 BoardNode.cs::CSharpScript::4742371843364253084::1775010519::0::1::::<>TextureButton<><>0<>0<><>::
 board_node.tscn::PackedScene::3138308277157932703::1774509768::0::1::::<><><>0<>0<><>::uid://b0urt3qe7mhsq::::res://aset/node_normal.png<>uid://b8tif3el8jxtc::::res://BoardNode.cs<>uid://44i70cdbwceo::::res://aset/node_pressed.png
 ConnectionLine.cs::CSharpScript::3417983706473869569::1775697401::0::1::::<>Node2D<><>0<>0<><>::
 connection_line.tscn::PackedScene::402734714144241649::1775646453::0::1::::<><><>0<>0<><>::uid://boxxxsjb624c8::::res://ConnectionLine.cs<>uid://bmuwvop6pugq0::::res://aset/white pair.png
 export_presets.cfg::TextFile::-1::1775179449::0::1::::<><><>0<>0<><>::
-Hand.cs::CSharpScript::3472205880084353551::1775697742::0::1::::<>HBoxContainer<><>0<>0<><>::
-hand.tscn::PackedScene::1845477473094571743::1774581077::0::1::::<><><>0<>0<><>::uid://bpp7yuoncaydj::::res://Hand.cs
+Hand.cs::CSharpScript::3472205880084353551::1775891304::0::1::::<>HBoxContainer<><>0<>0<><>::
+hand.tscn::PackedScene::1845477473094571743::1775891770::0::1::::<><><>0<>0<><>::uid://bpp7yuoncaydj::::res://Hand.cs<>uid://jcn4tjtql7du::::res://aset/audio/flipCard1.mp3
 icon.svg::CompressedTexture2D::6716958502443264032::1773661777::1773661814::1::::<><><>0<>0<>814355a000037b52da73c2731abc5f84<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 LobbyUi.cs::CSharpScript::4371792018210056739::1775177182::0::1::::<>Control<><>0<>0<><>::
 lobby_ui.tscn::PackedScene::8201996635074740717::1773855895::0::1::::<><><>0<>0<><>::uid://b3jy1m3s8xtnv::::res://LobbyUi.cs
-MoonCard.cs::CSharpScript::7336139192785651143::1775653790::0::1::::<>Sprite2D<><>0<>0<><>::
-MoonGame.cs::CSharpScript::7725466754925918270::1775720779::0::1::::<>Control<><>0<>0<><>::
-moon_card.tscn::PackedScene::7915833378190782150::1775521641::0::1::::<><><>0<>0<><>::uid://cak424xoqv6ir::::res://aset/card_back.png<>uid://dcrxe1vmgt3a6::::res://MoonCard.cs<>uid://culrx02ksmchf::::res://aset/MoonCard_1.webp
-moon_game.tscn::PackedScene::4743267498853376557::1775699722::0::1::::<><><>0<>0<><>::uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn<>uid://cxabyacn2uqgw::::res://player_score.tscn<>uid://ddohn4jybt8nj::::res://aset/background.png
+MoonCard.cs::CSharpScript::7336139192785651143::1775894522::0::1::::<>Sprite2D<><>0<>0<><>::
+MoonGame.cs::CSharpScript::7725466754925918270::1775897305::0::1::::<>Control<><>0<>0<><>::
+moon_card.tscn::PackedScene::7915833378190782150::1775893669::0::1::::<><><>0<>0<><>::uid://cak424xoqv6ir::::res://aset/card_back.png<>uid://dcrxe1vmgt3a6::::res://MoonCard.cs<>uid://culrx02ksmchf::::res://aset/MoonCard_1.webp<>uid://g24uca8rdhxe::::res://aset/audio/ting1.mp3
+moon_game.tscn::PackedScene::4743267498853376557::1775893669::0::1::::<><><>0<>0<><>::uid://dicjkq6cffa7g::::res://MoonGame.cs<>uid://1j70kqdmil32::::res://hand.tscn<>uid://cxabyacn2uqgw::::res://player_score.tscn<>uid://ddohn4jybt8nj::::res://aset/background.png<>uid://oxb5023enybf::::res://aset/audio/drawDeck2.mp3
 paper.jpg::CompressedTexture2D::2739050624575070407::1763299232::1773770866::1::::<><><>0<>0<>5609a42e8ba37152ad92f4a62b922d5d<>res://.godot/imported/paper.jpg-9469f63d708c97ca8bac06146d0195bd.ctex::
 PlayerScore.cs::CSharpScript::1187979573400436270::1775702405::0::1::::<>HBoxContainer<><>0<>0<><>::
 player_score.tscn::PackedScene::6387288350824586130::1775701626::0::1::::<><><>0<>0<><>::uid://q6p35uygelhu::::res://PlayerScore.cs<>uid://bbmo15m78qjeo::::res://aset/white star.png
@@ -27,9 +27,9 @@ rock.jpg::CompressedTexture2D::1678102176156451364::1763299182::1773770866::1:::
 RpsUi.cs::CSharpScript::3368587006863967525::1775175389::0::1::::<>Control<><>0<>0<><>::
 rps_ui.tscn::PackedScene::1873813505307548433::1775174402::0::1::::<><><>0<>0<><>::uid://x55dk5yukaxg::::res://rock.jpg<>uid://bn81evbklsfrp::::res://RpsUi.cs<>uid://bfa207y11xi12::::res://paper.jpg<>uid://x5se7q83owjh::::res://scissor.jpg
 scissor.jpg::CompressedTexture2D::1677376492343391713::1763299216::1773770866::1::::<><><>0<>0<>19a505bd8ea5cab9a4ff272ab0c23f68<>res://.godot/imported/scissor.jpg-e9ef01eda685566c59a7b55c94a034c4.ctex::
-Sprite2dTween.cs::CSharpScript::8761610187729588325::1775644138::0::1::::<>Sprite2D<><>0<>0<><>::
-test_scene.tscn::PackedScene::6674586036074550708::1775641358::0::1::::<><><>0<>0<><>::uid://dp8645otfo7h6::::res://aset/MoonCard_3.webp<>uid://dw3go7kfev5kr::::res://Sprite2dTween.cs<>uid://bbmo15m78qjeo::::res://aset/white star.png
-::res://aset/::1775699650
+Sprite2dTween.cs::CSharpScript::8761610187729588325::1775889364::0::1::::<>Sprite2D<><>0<>0<><>::
+test_scene.tscn::PackedScene::6674586036074550708::1775889478::0::1::::<><><>0<>0<><>::uid://dp8645otfo7h6::::res://aset/MoonCard_3.webp<>uid://dw3go7kfev5kr::::res://Sprite2dTween.cs<>uid://bbmo15m78qjeo::::res://aset/white star.png<>uid://g24uca8rdhxe::::res://aset/audio/ting1.mp3
+::res://aset/::1775888992
 background.png::CompressedTexture2D::7399179642993331887::1775699520::1775699650::1::::<><><>0<>0<>c7d5a50ac33046e7048e9bf744e1591e<>res://.godot/imported/background.png-c7e7ffa79a5d8e537a118fa262eb7f2a.ctex::
 black star.png::CompressedTexture2D::644810905535536555::1775722168::1775722193::1::::<><><>0<>0<>a6eb5d268b0c4afb8f3128addd3788fe<>res://.godot/imported/black star.png-99412af130cf3421193075a40d38d342.ctex::
 card_back.png::CompressedTexture2D::4795295713518454085::1774597366::1774598560::1::::<><><>0<>0<>826e5fb4b87a3c99f6fea1b4ce961c8e<>res://.godot/imported/card_back.png-4340807e6d7068e37c916d7a36d9bf27.ctex::
@@ -47,6 +47,14 @@ Splash_Image.png::CompressedTexture2D::498533537838397388::1775179025::177517916
 white dot.png::CompressedTexture2D::4384034384166956974::1774924232::1774924270::1::::<><><>0<>0<>9734e53c5121de83ee0c795d16a13c8e<>res://.godot/imported/white dot.png-acd45002a68111f79e6f8f611384d1f3.ctex::
 white pair.png::CompressedTexture2D::3271348397871855233::1774924220::1774924270::1::::<><><>0<>0<>695cf324a315a41dd16417b7d3e808d5<>res://.godot/imported/white pair.png-4cc19b4a97abe5422446d733f18ee287.ctex::
 white star.png::CompressedTexture2D::2482280124656937930::1774876550::1774876637::1::::<><><>0<>0<>176112bdb9b9c5fe5a06dde37be178f5<>res://.godot/imported/white star.png-0e30b9594a3aef93d63a2fdd9f09470f.ctex::
+::res://aset/audio/::1775893197
+cardPlaced.mp3::AudioStreamMP3::3066666983561618885::1775871792::1775890558::1::::<><><>0<>0<>77dcf4424f6577cf26e5668723176300<>res://.godot/imported/cardPlaced.mp3-a1ea8141deb63cf01c4ba4e2f2052d10.mp3str::
+drawDeck2.mp3::AudioStreamMP3::1030240146157290351::1775872024::1775890752::1::::<><><>0<>0<>caf32da17836eaf249dbf4f2bf0b7c88<>res://.godot/imported/drawDeck2.mp3-637ef05ff6d6d13d9abcab0f53ff111a.mp3str::
+Edgeworth-kuiper belt.mp3::AudioStreamMP3::8449427682375111374::1775874391::1775893197::1::::<><><>0<>0<>0aeb808dc5f83667e81569e333ceae03<>res://.godot/imported/Edgeworth-kuiper belt.mp3-bc4badd0a3d88aae7ae3b2f9e6a8d28f.mp3str::
+Fearsome_dark_space.mp3::AudioStreamMP3::6387333133760488030::1775873882::1775893197::1::::<><><>0<>0<>e56a3849219b0301e65f7f9f61f269ed<>res://.godot/imported/Fearsome_dark_space.mp3-375503615996b67d1e601ef5a73fdce0.mp3str::
+flipCard1.mp3::AudioStreamMP3::636670469911633394::1775872174::1775891075::1::::<><><>0<>0<>726ba25f40157249ba5d3fec9ea36ffe<>res://.godot/imported/flipCard1.mp3-935139ee2b62b36b0328378c3fbf1f37.mp3str::
+moon walk.mp3::AudioStreamMP3::3766627144476451219::1775874008::1775893197::1::::<><><>0<>0<>4185a3243e23fb0c52eaab6c119c6c4e<>res://.godot/imported/moon walk.mp3-177c3bb89c4638a5f6534e891fc5aba1.mp3str::
+ting1.mp3::AudioStreamMP3::478667876425047414::1775871427::1775889013::1::::<><><>0<>0<>fbc5e8b265c6cb8d459ce69928733f97<>res://.godot/imported/ting1.mp3-267fbeaefd72799a8aeddbd95e707c63.mp3str::
 ::res://Release/::1775179450
 ::res://Release/data_Half Moon Duel_windows_x86_64/::1775179465
 Half Moon Duel.deps.json::JSON::-1::1775179451::0::1::::<><><>0<>0<><>::

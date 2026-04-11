@@ -4,8 +4,12 @@ using System;
 public partial class Sprite2dTween : Sprite2D
 {
     private Line2D _line2D;
+    private AudioStreamPlayer _sfx;
     public override void _Ready()
     {
+        _sfx = GetNode<AudioStreamPlayer>("SFX");
+        _sfx.Play();
+
         var line2D = new Line2D();
         AddChild(line2D);
         line2D.Width = 5.0f;

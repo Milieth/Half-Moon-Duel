@@ -1,1 +1,4 @@
 source/Release/
+source/android/build/
+source/.godot/
+source/.vscode/

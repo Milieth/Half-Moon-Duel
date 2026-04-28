@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Half Moon Duel"
 config/description="Fan made LAN PVP board game Highly Inspired from \"Rise Of The Half Moon\" game"
-config/version="1.1"
+config/version="2.0"
 run/main_scene="uid://do4dxlkqs6df6"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 boot_splash/image="uid://hdq1lmgm1we3"
@@ -37,3 +37,4 @@ project/assembly_name="Half Moon Duel"
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

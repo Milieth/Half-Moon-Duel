@@ -1,9 +1,0 @@
-res://lobby_ui.tscn::1e80f720bb8018972844a86404845503::1773855895::res://.godot/exported/133200997/export-374a59d09da3349c66e8037afd6768c5-lobby_ui.scn
-res://rps_ui.tscn::ac390a65432d3b1a2a3985a3466030b6::1775174402::res://.godot/exported/133200997/export-40b7c487e5009fcd6cc1172715f69882-rps_ui.scn
-res://Board.tscn::a8ddc08076449cc9ced3cc516c118777::1774956672::res://.godot/exported/133200997/export-038618b68dc2dbc178fc728cfa49d253-Board.scn
-res://board_node.tscn::531f2cd9e116fc89fb8488f49077a466::1774509768::res://.godot/exported/133200997/export-4ce30152d38fc14b7fecb6169a55f60f-board_node.scn
-res://connection_line.tscn::0864ec9c7a3005abe66dacdbdecc6c4a::1774929416::res://.godot/exported/133200997/export-3ecb8b35ac9e11f03ebd23205640fee6-connection_line.scn
-res://hand.tscn::97137a2bc2033154c792ff07d5b49585::1774581077::res://.godot/exported/133200997/export-844b5a11ab5d20fdeb834a0aed7e0b8c-hand.scn
-res://moon_card.tscn::f358cca8623ca2e9e4098309c1dba386::1774916450::res://.godot/exported/133200997/export-294e3d2ba0d9431dbce3bed8d255091f-moon_card.scn
-res://moon_game.tscn::de887222d88d6398f4f86f8e958a81df::1775177222::res://.godot/exported/133200997/export-d9edb263033f1c6a992b7f12089ce665-moon_game.scn
-res://player_score.tscn::cf5989251ca9bf9ca178c983e682be00::1775029118::res://.godot/exported/133200997/export-e74cef5ec40f92ba32d0eab11229711e-player_score.scn

@@ -1,0 +1,20 @@
+Goal: tweening connection line
+Requirement:
+. after zoom in and recolor, before collecting star
+. happen only in card matching event
+
+
+Task Structure:
+. tweening lunar connection line
+. . determine first pos and second pos
+. . clear old point
+. . add point 2 times
+. . move the last point to second pos
+. tweening pair phase icon
+. . set texture to phase pair icon
+. . set alpha to 0
+. . tweening alpha to 1
+. tweening full phase icon
+. . set texture to full phase icon
+. . set alpha to 0
+. . set tweening alpha to 1

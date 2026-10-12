@@ -29,9 +29,9 @@ public partial class LobbyUi : Control
 		multi.ServerDisconnected += ServerDisconnected;
 	}
 
-    public override void _ExitTree()
-    {
-        base._ExitTree();
+	public override void _ExitTree()
+	{
+		base._ExitTree();
 
 		var multi = GetTree().GetMultiplayer();
 		if(multi is not null)
@@ -42,7 +42,7 @@ public partial class LobbyUi : Control
 			multi.ConnectionFailed -= ConnectedFail;
 			multi.ServerDisconnected -= ServerDisconnected;			
 		}
-    }
+	}
 
 	//Display text to screen below lobby panel
 	private void SetStatus(string text, bool isOk)
@@ -58,28 +58,28 @@ public partial class LobbyUi : Control
 			_statusFail.Text = text;			
 		}
 	}
-    // Callback from SceneTree
+	// Callback from SceneTree
 	private void PlayerConnected(long id)
 	{		
-        var rpsScene = ResourceLoader.Load<PackedScene>("res://moon_game.tscn").Instantiate();
+		var rpsScene = ResourceLoader.Load<PackedScene>("res://moon_game.tscn").Instantiate();
 		rpsScene.Connect("GameFinished", new Callable(this, nameof(EndGame)), (int)ConnectFlags.Deferred);
 		GetTree().Root.AddChild(rpsScene);
 		Hide();
 	}
 
-    // Callback from SceneTree
+	// Callback from SceneTree
 	private void PlayerDisconnected(long id)
 	{
 		EndGame(GetTree().GetMultiplayer().IsServer()?"Server Disconnected":"Client Disconnected");
 	}
 
-    // Callback from SceneTree, only for clients (not server).
+	// Callback from SceneTree, only for clients (not server).
 	private void ConnectedOk()
 	{
 		// GD.Print("Multiplayer CB: ConnectedOk");
 	}
 
-    // Callback from SceneTree, only for clients (not server).
+	// Callback from SceneTree, only for clients (not server).
 	private void ConnectedFail()
 	{
 		SetStatus("Couldn't Connect.!", false);
@@ -88,7 +88,7 @@ public partial class LobbyUi : Control
 		_joinButton.Disabled = false;
 	}
 
-    // Callback from SceneTree
+	// Callback from SceneTree
 	private void ServerDisconnected()
 	{
 		EndGame("Server Disconnected");
@@ -107,11 +107,26 @@ public partial class LobbyUi : Control
 		_peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 
 		GetTree().GetMultiplayer().MultiplayerPeer = _peer;
+
+		_ipAddress.Text = GetLocalIpAddress();
 		SetStatus("Waiting for other player.. .", true);
 
 		_hostButton.Disabled = true;
 		_joinButton.Disabled = true;
 	}
+
+	// get this device Ip, used when creating a host
+	private string GetLocalIpAddress()
+	{
+		foreach (string ip in IP.GetLocalAddresses())
+		{
+			if (ip.Contains(".") && !ip.StartsWith("127."))
+				return ip;
+		}
+
+		return "127.0.0.1"; //no local network IP is found		
+	}
+
 
 	//join a server with IP
 	private void OnJoinButtonPressed()
@@ -161,4 +176,3 @@ public partial class LobbyUi : Control
 		GetTree().GetMultiplayer().MultiplayerPeer = null;		
 	}
 }
-

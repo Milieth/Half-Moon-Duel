@@ -1,0 +1,63 @@
+Goal: Rise of the half moon game
+Requirement:
+. No AI Opponent
+. Works for Local Area Network(LAN)
+. Simple Asset
+. PC or Android
+
+Event Sequence:
+. Initial Board state
+. . determine board state
+. . reset player score
+. . player draw initial card
+. . . get random card 2 times
+. Player move turn
+. . switch player active turn
+. . Draw card phase
+. . place a card
+. . . selecting card
+. . . selecting board node
+. . get score
+. . . card pattern matching
+. . . calc point
+. . . change card owner state
+. Bonus poin phase
+. . scan each card in board
+. . count each owned card
+. End game phase
+. . determineWinner
+. . displayWinner
+. . endGame and back to lobby
+
+Task Structure:
+. Initial Board state
+. . deterimine board type
+. . init player score = 0
+. . player draw initial card
+. . . get random card
+. Player move turn
+. . Card move
+. . . selecting card
+. . . selecting board piece location
+. . . perform card move action
+. . . . validation
+. . . . remove card from hand
+. . . . add card to board
+. . . . update board state
+. . Pattern matching
+. . . lunar cycle matching
+. . . . check possible line
+. . . . save each line
+. . . other pattern matching(pairs and full moon)
+. . . poin gained
+. . . card claimed in board
+. Draw card phase
+. . get 1 random card
+. Bonus poin phase
+. . check each card in board
+. . count each card claimed by player
+. . add poin to player
+. End game phase
+. . get each player score
+. . determine the winner
+. . end game

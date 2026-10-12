@@ -1,0 +1,11 @@
+Goal:Allow player to place card to board
+
+Task Structure:
+. select card in hand
+. select node
+. place a card
+. . check if any card selected in hand
+. . . if no card return immadiately
+. . get node id
+. . place a card to board node
+. . remove card from hand

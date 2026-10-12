@@ -1,0 +1,14 @@
+Goal: allow card to flip back up
+Requirement: 
+. 
+
+Task Structure:
+. flip face down
+. . show card back
+. . hide card icon
+. flip face up
+. . show card icon
+. . hide card back
+. flip up
+. . check if card face up or face down
+. . flip face up if card currently face down and vice versa

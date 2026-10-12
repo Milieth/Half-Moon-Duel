@@ -1,0 +1,47 @@
+Goal: Half moon animation
+Requirement:
+. Simple Asset
+
+EventSequence:
+. Gain Score
+. . zoom in (all)
+. . re color (all)
+. . collecting star (one by one)
+. . . add star
+. . . move to score
+. . . remove star
+. . . repeat as many star
+. . zoom out (all)
+. Bonus Point
+. . white player bonus poin
+. . . zoom in
+. . . collecting star
+. . . zoom out
+. . black player bonus poin
+
+Task Structure:
+. Game opening
+. Draw a card
+. . push a card in hand anim
+. . flip a card anim
+. . . shrink scale x to 0
+. . . swap texture
+. . . grow scale x to 1.0
+. Place a card (Opponent and Player)
+. . move card from hand to board anim
+. . flip a card anim
+. Card pattern matching (Pair, Full, Cycle) and Claim a card
+. . Gain score from a card anim
+. . . claim a card(change its color)
+. . Set a line connection anim
+. Gain Score (collecting star)
+. . zoom in and out anim
+. . collecting star anim
+. . . Add star child
+. . . move it
+. . . and freed
+. Bonus Point Phase
+. . get target color
+. . get cards list
+. . Gain score from a card
+. Game ending (winner animation)

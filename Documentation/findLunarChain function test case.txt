@@ -1,0 +1,7 @@
+Test case:
+. no tail or no head case
+. multiple tail multiple head case
+
+. tail = head case (full set case)
+. full set without circle
+. full set double horn

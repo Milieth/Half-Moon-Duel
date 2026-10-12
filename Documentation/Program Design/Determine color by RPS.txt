@@ -1,0 +1,15 @@
+Goal: Determine Player color by RPS Scene
+Requirement:
+. run before start the game
+. one win is enough
+. memory free when the game finished
+
+Task Structure:
+. start rps 
+. . hide moon game
+. . instantiate rps scene
+. rps finished
+. . init player color
+. . init moon game layout
+. . show moon game
+. . freed rps scene

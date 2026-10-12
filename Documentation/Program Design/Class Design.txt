@@ -1,0 +1,65 @@
+Half Moon Duel Class Design
+
+Class Design: MoonGame
+# director of half moon duel game
+Member:
+. gameState
+. playerHand
+. board
+. playerScore
+. turnOwner
+Method:
+. startGame
+. change game state
+. determineWinner
+. syncGameState
+. updateGameUI
+. endGame
+
+Class Design: Hand
+# a list of card owned by player
+Member:
+. cardList
+Method:
+. drawRandomCard
+. selectCard
+. hideAllCard
+. showAllCard
+
+Class Design: Moon Card
+# card object with moon phase id
+Member:
+. card back
+. card icon
+. moon phase
+. inBoardOwner
+Method:
+. changeOwner
+. flip face up
+. flip face down
+. flip up
+
+Class Design: Board
+# a graph of node where player place their card
+Member:
+. board id
+. a list of board node
+Method:
+. drawNodeEdges
+. placeCard
+. removeCard
+. findCardMatching
+. getBonusPoint
+
+Class Design: BoardNode
+# a Node unit in a board
+Inheritence: TextureButton
+Member:
+. id
+. neighbor Node id
+. match connection with neighbor node
+. moonCard
+Method:
+. add card
+. remove card
+. set neighbor connection

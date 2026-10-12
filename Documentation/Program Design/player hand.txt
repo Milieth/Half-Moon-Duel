@@ -1,0 +1,29 @@
+Goal: allow player to take card in their hand
+Requirement:
+. allow player to selecting a card
+. allow player to draw random card
+. display selected card
+. horizontally aligned
+
+Task Structure:
+. draw card and add it to hand
+. . create new moon card 
+. . create new button
+. . . set minimum size equal to card size
+. . add card to button
+. . set card position to center button
+. . add button to hand
+. . add button to list
+. display card in hand
+. . addChild mooncard to texture button 
+. selecting card
+. . deselect any texture button
+. . get texture button id on pressed
+. . set selected state to true
+. . update UI
+. hide All Card
+. . hide each card
+. . display closed card equal to it
+. show all card
+. . hide closed card 
+. . display each card

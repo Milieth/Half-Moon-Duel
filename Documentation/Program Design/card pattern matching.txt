@@ -1,0 +1,41 @@
+Goal: Allow player to get score from card pattern matching
+Requirement:
+. recognize newly placed card
+. there are 3 pattern matching: phase pair, full phase, lunar phase sequence
+
+Struct:CardMatchEvent
+. Match type
+. node sequence
+. score
+. owner
+
+Task Structure:
+. detect phase pair
+. . get pair sequence
+. . . get each neighbor node
+. . . check if their phase equal, node phase = neighbor phase
+. . . append to list
+. detect full phase
+. . get full phase sequence
+. . . get each neighbor node
+. . . check if phase difference = 4, |node phase - neighbor pahse| = 4 
+. detect lunar phase sequence
+. . get lunar phase sequence
+
+. add phase pattern to one list
+. . add pattern type for each pattern sequence
+
+. calc score for each pattern
+. . get pattern type
+. . calc score based on its pattern type
+. . . phase pair score, for each pair * pair score
+. . . full phase pair score, for each pair * pair score
+. . . phase sequence score
+. . . . for each sequence count full set count
+. . . . score = length + 7*full_set count
+. add score phase pattern list
+
+. display card match event
+. . highlight all board node
+. . connect each node based on event order
+. . update score label

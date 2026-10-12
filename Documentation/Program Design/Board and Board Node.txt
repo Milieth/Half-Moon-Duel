@@ -1,0 +1,24 @@
+Board Program Design
+Goal: Allow player to place their card in board node
+Requirement:
+. player can see connection between node
+. board node can be clicked and perform and event
+. display card that placed at board node
+
+BoardLayout.tscn
+. board nodes
+. . id
+. . position
+. . adjacent id
+
+Task Structure:
+. display board node
+. . init texture
+. . set position in screen
+. . add child to board
+. draw node edges
+. . get each node and its adjacent node
+. . draw line between two node
+. . . get actual position in screen
+. . . draw line between two point in screen
+. . add child the line to board

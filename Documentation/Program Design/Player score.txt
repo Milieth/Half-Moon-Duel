@@ -1,0 +1,23 @@
+Goal: Allow player to see their score
+Requirement:
+. use star icon
+. update only after player gain poin
+
+Class Design: PlayerScore
+# both player score
+Member:
+. score
+. score label
+. icon
+Method:
+. update label
+
+Task Structure:
+. display
+. . define label and icon
+. . config label
+. . addchild label and icon to playerScore
+. . addchild player score to screen
+. update player score
+. . set score
+. . update label UI

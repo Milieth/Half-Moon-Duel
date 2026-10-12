@@ -1,0 +1,23 @@
+Goal: determine who is currently playing, and set the game according to it
+Requirement:
+. 
+
+Class Design: TurnManager
+# determine who is currently playing
+Member:
+. activePlayer
+Method:
+. IsYourTurn()
+. setGameTurn(isActive)
+. setGameTurn(Player player)
+
+Task Structure:
+. check machine owner == player
+. set game turn
+. . determine he is machine owner
+. . if true, set the game to your turn
+. . . enable hand
+. . . enable board node
+. . if false, set the game to opponent turn
+. . . disable hand
+. . . disable board node

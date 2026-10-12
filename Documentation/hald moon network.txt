@@ -1,0 +1,48 @@
+Goal: Allow Player to play Half moon game As server or client
+Requirement:
+. player can't move if this is not their turn
+. no change to game layout
+. update both state every move
+
+Network Flow:
+. set initial board state(server/client)
+. request to move a card(server/client)
+. validation card move(server)
+. pattern matching and point logic(server)
+. broadcast update board state(server)
+. end player turn(server)
+. . switch player turn
+. . sync game state
+. end game phase(server)
+. . bonus poin phase
+. . determine winner
+. . end game
+
+Network Task Structure:
+. set Initial board state
+. . get server or client
+. . init layout and set game turn
+. server send rpc draw card to all peer
+. request to move a card(client)
+. . prevent card to be pressed
+. . send card index, node id, and sender to server
+. validation card move(server)
+. . check if sender match active turn
+. . check if card actually exist
+. . check if target node is empty
+. broadcast place card event
+. . place card and determine event(server)
+. . send to all peer, place a card func and card event data and run it
+. . . detect card event(server)
+. . . convert card event to rpc packed and send it(server)
+. . . receive packed and unpacking(all)
+. . . implement card match event(all)
+. . switch player turn to next player turn
+. Get bonus poin
+. . count each player bonus point(server)
+. . implement bonus poin (all)
+. End game
+. . stop any move(all)
+. . determine winner(server)
+. . display winner(all)
+. . display end game button(all)

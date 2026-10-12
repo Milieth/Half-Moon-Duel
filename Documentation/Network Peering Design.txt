@@ -1,0 +1,28 @@
+Goal: Connecting Network Peer 2 godot instance 
+requirement:
+. 1 is server and other is client
+. print from both server and client when connection succeed
+
+Task Structure:
+>Host A Server
+. Create Server
+. . create server via godot ENetMultiplayerPeer
+. . . handle error if fail
+. . set Network Packet compress mode
+. . save network peer to global singleton
+. . disable host and join button
+. Waiting for other player
+. . display waiting status
+
+>Join A server
+. Create client on target IP and port
+. . Determine Destination IP Address
+. . . check if ip address in input text valid
+. . create client via godot ENetMultiplayerPeer
+. . set network packet compress mode
+. . save peer delegate to global singgleton
+. prompt status waiting to connect
+
+>prompt connection result
+. get each unique ID
+. print ID and success message

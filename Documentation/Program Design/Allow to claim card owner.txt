@@ -1,0 +1,30 @@
+Goal: Allow player to claim card owner
+. the last player chaining card is the owner
+. player must know who own the card
+. player know the connection between cards(node)
+
+Class ConnectionLine
+ Member:
+. EdgeLine
+. PairIcon
+. Pattern
+ Method:
+. Connect
+. SetMatchPattern
+
+Task Structure:
+. change Card owner
+. . set card owner in board
+. . update UI
+. update Card UI regarding to owner
+. . set color 
+
+. display connection line
+. init with no event line type
+. add to screen
+. . iterate each board_node
+. . create ConnectionLine and add it to board
+. . save it in dictionary with board node id as keys, ensure keys is unique AB=BA
+. . . get node ID
+. . . join it in string
+. . . sort the string

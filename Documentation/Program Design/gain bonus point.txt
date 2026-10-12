@@ -1,0 +1,9 @@
+Goal: allow player to gain bonus point based on card owned
+Requirement:
+. gained during end of game
+
+Task Structure:
+. get target color
+. count many card with given color
+. . check each node
+. . check if card color = given color

@@ -107,7 +107,6 @@ public partial class MoonGame : Control
 	private AudioStreamPlayer _firstDraw;
 	private AudioStreamPlayer _bgm;
 
-
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -120,21 +119,23 @@ public partial class MoonGame : Control
 		_prompt.Text = "";
 
 		_firstDraw = GetNode<AudioStreamPlayer>("FirstDraw");
+
 		_bgm = GetNode<AudioStreamPlayer>("BGM");
-		var bgmFiles = new List<string>
+
+		if(_multiplayerAuth == Player.Server)
 		{
-			"res://aset/audio/Edgeworth-kuiper belt.mp3",
-			"res://aset/audio/Fearsome_dark_space.mp3",
-			"res://aset/audio/moon walk.mp3"
-		};
-		_bgm.Stream = GD.Load<AudioStream>(bgmFiles[_rng.RandiRange(0, bgmFiles.Count-1)]);
-		if (_bgm.Stream is AudioStreamMP3 mp3Stream)
-			mp3Stream.Loop = true;
+			var bgmFiles = new List<string>
+			{
+				"res://aset/audio/Edgeworth-kuiper belt.mp3",
+				"res://aset/audio/Fearsome_dark_space.mp3",
+				"res://aset/audio/moon walk.mp3"
+			};
+			Rpc(nameof(PlayBgm), bgmFiles[_rng.RandiRange(0, bgmFiles.Count-1)]);
+		}
 		
 
 		if(_multiplayerAuth == Player.Server)
 		{
-			// AudioServer.SetBusMute(0, true);
 			int boardID = _rng.RandiRange(1, Board.MaxID);
 			Rpc(nameof(InitBoard), boardID);		
 		}
@@ -143,6 +144,15 @@ public partial class MoonGame : Control
 		var rpsScene = GD.Load<PackedScene>("res://rps_ui.tscn").Instantiate<RpsUi>();
 		GetTree().Root.AddChild(rpsScene);
 		rpsScene.RPSFinished += OnRPSFinished;
+	}
+	
+	// play bgm on both server and client
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void PlayBgm(string serverBgmFile)
+	{
+		_bgm.Stream = GD.Load<AudioStream>(serverBgmFile);
+		if (_bgm.Stream is AudioStreamMP3 mp3Stream)
+			mp3Stream.Loop = true;		
 	}
 
 	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]

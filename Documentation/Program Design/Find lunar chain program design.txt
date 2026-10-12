@@ -1,0 +1,37 @@
+Goal: Find lunar chain of newly placed card
+Requirement:
+. lunar cycle(sequence of phase) should be 3 cards or more
+
+
+Task Structure:
+. init
+. . get board
+. . get target node
+. depth first search
+. . ensure target node has card in it
+. . mark target node as visited node
+. . . get visited node set and add target node
+. . find every node that inside adjacent list (neighbors node)
+. . for each neighbor inside neighbors
+. . . check if neighbor marked visited
+. . . . if true dont check its branch
+. . . determine expected phase(-1 or +1)
+. . . check neighbor match the expected phase
+. . . find the neighbor branch (call depth first search again recursively)
+. . . . unmark this node visited id before returning the function
+. . . . return single node if neighbor don't have branch
+. . . . return branch node of this neighbor
+. . . . concatenate each branch node with neighbor node to construct node chain (by doing the function recursively)
+. . . save each branch of neighbor node
+. . . . check if this is the first branch
+. . . . . true, save it
+. . . . . false, save it new branch
+. get lunar phase sequence of target node
+. . get lunar sequence from backward path
+. . . get backward path of target node
+. . . for each backward path determine forward path
+. . . combine backward and forward path into lunar phase sequence
+. . get lunar sequence from forward path
+. . . get forward path of target node
+. . . for each forward path determine its backward path
+. . . combine forward and backward path into lunar phase sequence

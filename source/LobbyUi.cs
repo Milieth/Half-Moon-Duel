@@ -7,6 +7,7 @@ public partial class LobbyUi : Control
 	private const int MaxClient = 1;
 	private	ENetMultiplayerPeer _peer;
 	private LineEdit _ipAddress;
+	private LineEdit _playerName;
 	private Label _statusOk;
 	private Label _statusFail;
 	private Button _hostButton;
@@ -15,6 +16,7 @@ public partial class LobbyUi : Control
 	public override void _Ready()
 	{
 		_ipAddress = GetNode<LineEdit>("%AddressEdit");
+		_playerName = GetNode<LineEdit>("%NameEdit");
 		_statusOk = GetNode<Label>("%StatusOk");
 		_statusFail = GetNode<Label>("%StatusFail");
 		_hostButton = GetNode<Button>("%HostButton");
@@ -61,10 +63,17 @@ public partial class LobbyUi : Control
 	// Callback from SceneTree
 	private void PlayerConnected(long id)
 	{		
-		var rpsScene = ResourceLoader.Load<PackedScene>("res://moon_game.tscn").Instantiate();
-		rpsScene.Connect("GameFinished", new Callable(this, nameof(EndGame)), (int)ConnectFlags.Deferred);
-		GetTree().Root.AddChild(rpsScene);
+		var gameScene = ResourceLoader.Load<PackedScene>("res://moon_game.tscn").Instantiate() as MoonGame;
+		SetPlayerName(gameScene);
+		gameScene.Connect("GameFinished", new Callable(this, nameof(EndGame)), (int)ConnectFlags.Deferred);
+		GetTree().Root.AddChild(gameScene);
 		Hide();
+	}
+
+	private void SetPlayerName(MoonGame gameScene)
+	{
+		var player = GetTree().GetMultiplayer().IsServer()?Player.Server:Player.Client;
+		gameScene.SetPlayerName((int)player, _playerName.Text);
 	}
 
 	// Callback from SceneTree

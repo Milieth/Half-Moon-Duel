@@ -99,6 +99,8 @@ public partial class MoonGame : Control
 	private Dictionary<Player, PlayerScore> _score = new();
 	private Dictionary<Player, Hand> _hand = new();
 	private Dictionary<Player, MoonCard.Color> _playerColor = new();
+	private Dictionary<Player, string> _playerName = new();
+	private Dictionary<Player, Label> _playerNameLabel = new();
 	private Player _activePlayer = Player.None;
 	private Label _prompt;
 	private Button _exitButton;
@@ -121,6 +123,12 @@ public partial class MoonGame : Control
 		_firstDraw = GetNode<AudioStreamPlayer>("FirstDraw");
 
 		_bgm = GetNode<AudioStreamPlayer>("BGM");
+
+		if(_multiplayerAuth == Player.Client)
+		{
+			RpcId(1, nameof(SetPlayerName), (int)Player.Client, _playerName[Player.Client]);
+			RpcId(1, nameof(UpdatePlayerName));
+		}
 
 		if(_multiplayerAuth == Player.Server)
 		{
@@ -164,11 +172,12 @@ public partial class MoonGame : Control
 			node.OnBoardNodePressed += OnNodePressed;		
 	}
 
+	// init moon game interface and start the game
 	private void OnRPSFinished(int rpsWinner)
 	{
-		//start the game
 		InitPlayerColor((Player)rpsWinner);
 		InitLayout(_multiplayerAuth);
+		UpdateNameLabel();
 
 		_firstDraw.Play();
 		if(_multiplayerAuth == Player.Server)
@@ -207,7 +216,13 @@ public partial class MoonGame : Control
 		{
             { Player.Server, GetNode<Hand>($"{_playerColor[Player.Server]}Hand") },
             { Player.Client, GetNode<Hand>($"{_playerColor[Player.Client]}Hand") }
-		};		
+		};
+
+		_playerNameLabel = new()
+		{
+			{Player.Server, GetNode<Label>($"{_playerColor[Player.Server]}Name")},
+			{Player.Client, GetNode<Label>($"{_playerColor[Player.Client]}Name")}	
+		};
 	}
 
 	//setting game layout for this player, wheter use bright side or dark side
@@ -231,6 +246,38 @@ public partial class MoonGame : Control
 			if(player == front) score.Position = new Vector2(62, 489);
 			else score.Position = new Vector2(1088, 193);
 		}
+
+		foreach(var (player, nameLabel) in _playerNameLabel)
+		{
+			if(player == front) nameLabel.Position = new Vector2(72, 467);
+			else nameLabel.Position = new Vector2(1100, 170);			
+		}
+	}
+
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void SetPlayerName(int player, string name)
+	{
+		if(name == "")
+		{
+			name = $"Player {player}";
+		}
+
+		_playerName[(Player)player] = name;
+	}
+
+	// update both server and client player name with server data(Server Only)
+	[Rpc(mode:MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void UpdatePlayerName()
+	{
+		Rpc(nameof(SetPlayerName), (int)Player.Server, _playerName[Player.Server]);
+		Rpc(nameof(SetPlayerName), (int)Player.Client, _playerName[Player.Client]);
+	}
+
+	// update player name label, this function should be called after InitPlayerColor
+	private void UpdateNameLabel()
+	{
+		_playerNameLabel[Player.Server].Text = _playerName[Player.Server];
+		_playerNameLabel[Player.Client].Text = _playerName[Player.Client];
 	}
 
 	// (Server Only) Draw card randomly to target player hand

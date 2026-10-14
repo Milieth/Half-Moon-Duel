@@ -15,6 +15,25 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ehahf")
 
+[node name="BrightName" type="Label" parent="." unique_id=1592273306]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 467.0
+offset_right = 146.0
+offset_bottom = 494.0
+theme_override_font_sizes/font_size = 19
+text = "Player 1"
+
+[node name="DarkName" type="Label" parent="." unique_id=1070316189]
+layout_mode = 0
+offset_left = 1100.0
+offset_top = 170.0
+offset_right = 1174.0
+offset_bottom = 197.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 19
+text = "Player 1"
+
 [node name="BrightHand" parent="." unique_id=938261323 instance=ExtResource("2_ehahf")]
 layout_mode = 1
 offset_top = 270.0
